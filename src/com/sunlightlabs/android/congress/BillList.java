@@ -35,7 +35,7 @@ public class BillList extends ListActivity {
 
 	private String sponsor_id, sponsor_name;
 	private int type;
-	
+
 	private LoadingWrapper lw;
 
 	@Override
@@ -88,7 +88,7 @@ public class BillList extends ListActivity {
 			Utils.setTitle(this, R.string.menu_bills_law, R.drawable.bill_law);
 			break;
 		case BILLS_SPONSOR:
-			Utils.setTitle(this, "Latest Bills by\n" + sponsor_name, R.drawable.bill_multiple);
+			Utils.setTitle(this, getString(R.string.menu_latest_bills_by) + "\n" + sponsor_name, R.drawable.bill_multiple);
 			Utils.setTitleSize(this, 18);
 			break;
 		case BILLS_LATEST_VOTES:
@@ -117,7 +117,7 @@ public class BillList extends ListActivity {
 				Utils.showBack(this, R.string.empty_bills);
 			return;
 		}
-		
+
 		// remove the placeholder and add the new bills in the array
 		if (bills.size() > 0) {
 			int lastIndex = bills.size() - 1;
@@ -137,10 +137,10 @@ public class BillList extends ListActivity {
 
 	public void onLoadBills(CongressException exception) {
 		if (bills.size() > 0) {
-			
+
 			lw.getLoading().setVisibility(View.GONE);
 			lw.getRetryContainer().setVisibility(View.VISIBLE);
-			
+
 			Button retry = lw.getRetry();
 			retry.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
@@ -204,7 +204,7 @@ public class BillList extends ListActivity {
 	private static class BillAdapter extends ArrayAdapter<Bill> {
 		private LayoutInflater inflater;
 		private BillList context;
-		
+
 		private static final int BILL = 0;
 		private static final int LOADING = 1;
 
@@ -223,7 +223,7 @@ public class BillList extends ListActivity {
 		public boolean isEnabled(int position) {
 			return !((position == getCount() - 1) && getItem(position) == null);
 		}
-		
+
 		@Override
 		public int getItemViewType(int position) {
 			if (getItem(position) != null)
@@ -231,7 +231,7 @@ public class BillList extends ListActivity {
 			else
 				return LOADING;
 		}
-		
+
 		@Override
 		public int getViewTypeCount() {
 			return 2;
@@ -257,16 +257,16 @@ public class BillList extends ListActivity {
 			ViewHolder holder;
 			if (view == null) {
 				view = inflater.inflate(R.layout.bill_item, null);
-				
+
 				holder = new ViewHolder();
 				holder.byline = (TextView) view.findViewById(R.id.byline);
 				holder.date = (TextView) view.findViewById(R.id.date);
 				holder.title = (TextView) view.findViewById(R.id.title);
-				
+
 				view.setTag(holder);
 			} else
 				holder = (ViewHolder) view.getTag();
-			
+
 			String code, action;
 			Date date = null;
 			switch (context.type) {
@@ -293,7 +293,7 @@ public class BillList extends ListActivity {
 
 			if (date != null) {
 				SimpleDateFormat format = null;
-				if(date.getYear() == new Date().getYear()) 
+				if(date.getYear() == new Date().getYear())
 					format = new SimpleDateFormat("MMM dd");
 				else
 					format = new SimpleDateFormat("MMM dd, yyyy");
@@ -312,7 +312,7 @@ public class BillList extends ListActivity {
 
 			return view;
 		}
-		
+
 		static class ViewHolder {
 			TextView byline, date, title;
 		}
@@ -327,7 +327,7 @@ public class BillList extends ListActivity {
 			this.loadBillsTask = loadBillsTask;
 		}
 	}
-	
+
 	static class LoadingWrapper {
 		private View base, loading, retryContainer;
 		private Button retry;
@@ -341,11 +341,11 @@ public class BillList extends ListActivity {
 		public Button getRetry() {
 			return retry == null ? retry = (Button) base.findViewById(R.id.retry) : retry;
 		}
-		
+
 		public View getRetryContainer() {
 			return retryContainer == null ? retryContainer = base.findViewById(R.id.retry_container) : retryContainer;
 		}
-		
+
 		public View getBase() {
 			return base;
 		}

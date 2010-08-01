@@ -3,9 +3,26 @@
     <string name="app_name">Congress</string>
     <string name="app_version">2.7</string>
     <string name="app_version_older">Version 2.6</string>
+
+    <string name="loading_votes">Loading votes...</string>
+    <string name="results">Results</string>
+    <string name="error_loading_votes">Error loading votes.</string>
+
+    <string name="about_1a">Bill information provided by <a href="http://govtrack.us">GovTrack</a>, through the Library of Congress.  Bill summaries written by the Congressional Research Service.<br/><br/></string>
+    <string name="about_1b">Legislator search and information powered by the <a href="http://services.sunlightlabs.com/api/">Sunlight Labs API</a>.<br/><br/></string>
+    <string name="about_1c">News mentions provided by the <a href="http://developer.yahoo.com/search/news/">Yahoo! News API</a>, and Twitter search powered by <a href="http://www.winterwell.com/software/jtwitter.php">JTwitter</a>.</string>
+    <string name="about_2a">This app is made by <a href="http://sunlightlabs.com">Sunlight Labs</a>, </string>
+    <string name="about_2b">a division of the <a href="http://sunlightfoundation.com">Sunlight Foundation</a> </string>
+    <string name="about_2c">that is dedicated to increasing government transparency through the power of technology.</string>
     
     <string name="create_shortcuts">Legislator</string>
     <string name="first_time_twitter">Tap to the right of a tweet to reply using a Twitter app.</string>
+    <string name="a_day_ago">a day ago</string>
+    <string name="an_hour_ago">an hour ago</string>
+    <string name="a_minute_ago">a minute ago</string>
+    <string name="just_now">just now</string>
+    <string name="error_loading_committees">Error loading committees.</string>
+    <string name="belongs_to_no_committees">Belongs to no committees.</string>
     
     <string name="empty_zipcode">No legislators found for your zipcode.</string>
     <string name="empty_location">No legislators found for your location.</string>
@@ -33,6 +50,13 @@
     <string name="committees_senate">Senate Committees</string>
     <string name="committees_joint">Joint Committees</string>
     <string name="committees_empty">No committees found.</string>
+    
+    <string name="representative_for">Representative for </string> <!--  TODO -->
+    <string name="legislator_search">Legislator Search</string>
+    <string name="cosponsors_for">Cosponsors for</string>
+    <string name="legislators_from">Legislators from</string>
+    <string name="legislators_named">Legislators named</string>
+    <string name="legislators_for">Legislators for</string>
     
     <string name="voting_record">Voting Record</string>
     <string name="sponsored_bills">Sponsored Bills</string>
@@ -63,19 +87,25 @@
     <string name="menu_bills_recent">Just Introduced</string>
     <string name="menu_bills_code">By Bill Code</string>
     <string name="menu_bills_latest_votes">Latest Votes</string>
+    <string name="menu_committees">Committees</string>
+    <string name="menu_copy_link">Copy link</string>
+    <string name="menu_favorite_bill_error">Error loading starred bills.</string>
+    <string name="menu_favorite_legislator_error">Error loading starred legislators.</string>
+    <string name="menu_latest_bills_by">Latest Bills by</string>
     <string name="menu_legislators_header">Legislators</string>
     <string name="menu_legislators_location">My Location</string>
     <string name="menu_legislators_state">State</string>
     <string name="menu_legislators_lastname">Last Name</string>
     <string name="menu_legislators_zip">Zip Code</string>
+    <string name="menu_location_no_location">Cannot update location</string>
+    <string name="menu_location_updating">Updating location...</string>
+    <string name="menu_view">View</string>
     <string name="menu_votes_header">Votes</string>
     <string name="menu_votes_latest">Most Recent</string>
     <string name="menu_votes_nominations">Nominations</string>
-    <string name="menu_location_no_location">Cannot update location</string>
-    <string name="menu_location_updating">Updating location...</string>
-    <string name="menu_favorite_bill_error">Error loading starred bills.</string>
-    <string name="menu_favorite_legislator_error">Error loading starred legislators.</string>
-    <string name="menu_committees">Committees</string>
+    <string name="menu_watch">Watch</string>
+    
+    <string name="share_bill_via">Share bill via:</string>
     
     <string name="bill_not_found">No bill found by that code.</string>
     <string name="bills_retry_note">Couldn\'t load bills.</string>
@@ -101,9 +131,29 @@
     
     <string name="out_of_office_message">This legislator is no longer in office.</string>
     
+    <string name="yea">Yea</string>
     <string name="yeas">Yeas</string>
+    <string name="nay">Nay</string>
     <string name="nays">Nays</string>
     <string name="present">Present</string>
     <string name="not_voting">Did Not Vote</string>
     <string name="not_voting_short">No Vote</string>
+    
+    <string name="enacted_on">Enacted on</string>
+    <string name="enacted">Enacted</string>
+    <string name="vetoed_on">Vetoed on</string>
+    <string name="vetoed">Vetoed</string>
+    <string name="vote">Vote</string>
+    <string name="introduced_on">Introduced on</string>
+    <string name="awaiting_signature_since">Awaiting signature since</string>
+    <string name="override_failed_in_the_senate_on">Override failed in the Senate on</string>
+    <string name="override_passed_in_the_senate_on">Override passed in the Senate on</string>
+    <string name="override_failed_in_the_house_on">Override failed in the House on</string>
+    <string name="override_passed_in_the_house_on">Override passed in the House on</string>
+    <string name="failed">Failed</string>
+    <string name="failed_the_senate_on">Failed the Senate on</string>
+    <string name="failed_the_house_on">Failed the House on</string>
+    <string name="passed">Passed</string>
+    <string name="passed_the_senate_on">Passed the Senate on</string>
+    <string name="passed_the_house_on">Passed the House on</string>
 </resources>

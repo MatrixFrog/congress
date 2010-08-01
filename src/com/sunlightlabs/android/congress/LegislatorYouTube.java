@@ -39,19 +39,19 @@ import com.sunlightlabs.youtube.YouTubeException;
 public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 	private static final int MENU_WATCH = 0;
 	private static final int MENU_COPY = 1;
-	
+
 	private String username;
 	private Video[] videos;
-	
+
 	private LoadVideosTask loadVideosTask = null;
 	private HashMap<Integer, LoadYoutubeThumbTask> loadThumbTasks = new HashMap<Integer, LoadYoutubeThumbTask>();
-	
+
 	public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.list);
-    	
+
     	username = getIntent().getStringExtra("username");
-    	
+
     	LegislatorYouTubeHolder holder = (LegislatorYouTubeHolder) getLastNonConfigurationInstance();
     	if (holder != null) {
     		videos = holder.videos;
@@ -66,12 +66,12 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 					iterator.next().onScreenLoad(this);
 			}
     	}
-    	
+
     	setupControls();
     	if (loadVideosTask == null)
     		loadVideos();
 	}
-	
+
 	@Override
     public Object onRetainNonConfigurationInstance() {
     	LegislatorYouTubeHolder holder = new LegislatorYouTubeHolder();
@@ -80,7 +80,7 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 		holder.loadThumbTasks = this.loadThumbTasks;
     	return holder;
     }
-	
+
 	private void setupControls() {
 		Utils.setLoading(this, R.string.youtube_loading);
 		((Button) findViewById(R.id.refresh)).setOnClickListener(new View.OnClickListener() {
@@ -92,39 +92,39 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 		});
     	registerForContextMenu(getListView());
 	}
-    
+
 	protected void loadVideos() {
 	    if (videos == null)
     		loadVideosTask = (LoadVideosTask) new LoadVideosTask(this).execute(username);
     	else
     		displayVideos();
 	}
-	
+
 	protected void displayVideos() {
     	if (videos != null && videos.length > 0)
 	    	setListAdapter(new VideoAdapter(LegislatorYouTube.this, videos));
     	else
 	    	Utils.showRefresh(this, R.string.youtube_empty);
     }
-	
+
 	@Override
 	public void onListItemClick(ListView parent, View view, int position, long id) {
 		Video video = (Video) parent.getItemAtPosition(position);
 		launchVideo(video);
 	}
-	
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, view, menuInfo);
-		menu.add(0, MENU_WATCH, 0, "Watch");
-		menu.add(0, MENU_COPY, 1, "Copy link");
+		menu.add(0, MENU_WATCH, 0, R.string.menu_watch);
+		menu.add(0, MENU_COPY, 1, R.string.menu_copy_link);
 	}
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		Video video = (Video) getListView().getItemAtPosition(info.position);
-		
+
 		switch (item.getItemId()) {
 		case MENU_WATCH:
 			launchVideo(video);
@@ -133,14 +133,14 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 			ClipboardManager cm = (ClipboardManager) getSystemService(Activity.CLIPBOARD_SERVICE);
 			cm.setText(video.url);
 		}
-		
+
 		return super.onContextItemSelected(item);
 	}
-	
+
 	private void launchVideo(Video video) {
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(video.url)));
 	}
-	
+
 	protected class VideoAdapter extends ArrayAdapter<Video> {
 		LayoutInflater inflater;
 		LegislatorYouTube context;
@@ -150,12 +150,12 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 			this.context = context;
             inflater = LayoutInflater.from(context);
         }
-        
+
         @Override
         public boolean areAllItemsEnabled() {
         	return true;
         }
-        
+
         @Override
         public int getViewTypeCount() {
         	return 1;
@@ -164,28 +164,28 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 		public View getView(int position, View view, ViewGroup parent) {
 			if (view == null)
 				view = inflater.inflate(R.layout.youtube, null);
-			
+
 			Video video = getItem(position);
 
 			VideoHolder holder = new VideoHolder();
 			holder.url = video.thumbnailUrl;
 			holder.hash = holder.url == null ? null : holder.url.hashCode();
-			
+
 			TextView title = (TextView) view.findViewById(R.id.video_title);
 			title.setText(video.title);
 			holder.title = title;
-			
+
 			// make the date stand out in the description using bold text
 			StringBuilder full = new StringBuilder("<b>").append(video.timestamp.format("%b %d")).append("</b>");
 			String description = video.description != null ? video.description.trim() : "";
-			
+
 			if (!description.equals("")) // check to see if the video has a non-empty description first
 				full.append(" - ").append(description);
-			
+
 			TextView desc = (TextView) view.findViewById(R.id.video_description);
 			desc.setText(Html.fromHtml(Utils.truncate(full.toString(), 150)));
 			holder.description = desc;
-			
+
 			ImageView thumb = (ImageView) view.findViewById(R.id.thumbnail);
 			holder.thumb = thumb;
 
@@ -198,13 +198,13 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 					context.loadThumb(holder);
 				}
 			}
-			else 
+			else
 				holder.thumb.setImageResource(R.drawable.youtube_thumb);
-			
+
 			view.setTag(holder);
 			return view;
 		}
-		
+
 		class VideoHolder {
 			Integer hash;
 			String url;
@@ -223,19 +223,19 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 			}
 		}
     }
-    
+
     private class LoadVideosTask extends AsyncTask<String,Void,Video[]> {
     	public LegislatorYouTube context;
-    	
+
     	public LoadVideosTask(LegislatorYouTube context) {
     		super();
     		this.context = context;
     	}
-    	
+
     	public void onScreenLoad(LegislatorYouTube context) {
     		this.context = context;
     	}
-    	
+
     	@Override
     	protected Video[] doInBackground(String... usernames) {
     		try {
@@ -244,7 +244,7 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
         		return null;
         	}
     	}
-    	
+
     	@Override
     	protected void onPostExecute(Video[] videos) {
     		context.videos = videos;
@@ -252,14 +252,14 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
     		context.loadVideosTask = null;
     	}
     }
-    
+
     static class LegislatorYouTubeHolder {
 		Video[] videos;
 		LoadVideosTask loadVideosTask;
 		HashMap<Integer, LoadYoutubeThumbTask> loadThumbTasks;
 	}
 
-	
+
 
 	public void loadThumb(VideoAdapter.VideoHolder holder) {
 		int hash = holder.url.hashCode();

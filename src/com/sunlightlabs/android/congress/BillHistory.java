@@ -23,14 +23,14 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 	private LoadBillTask loadBillTask;
 	private Bill bill;
 	private String id;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list);
-		
+
 		id = getIntent().getStringExtra("id");
-		
+
 		BillHistoryHolder holder = (BillHistoryHolder) getLastNonConfigurationInstance();
 		if (holder != null) {
 			this.loadBillTask = holder.loadBillTask;
@@ -38,43 +38,43 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 			if (loadBillTask != null)
 				loadBillTask.onScreenLoad(this);
 		}
-		
+
 		if (loadBillTask == null)
 			loadBill();
 	}
-	
+
 	public void loadBill() {
 		if (bill == null)
 			loadBillTask = (LoadBillTask) new LoadBillTask(this, id).execute("actions");
 		else
 			displayBill();
 	}
-	
+
 	public Object onRetainNonConfigurationInstance() {
 		return new BillHistoryHolder(loadBillTask, bill);
 	}
-	
+
 	public Context getContext() {
 		return this;
 	}
-	
+
 	public void onLoadBill(Bill bill) {
 		this.loadBillTask = null;
 		this.bill = bill;
 		displayBill();
 	}
-	
+
 	public void onLoadBill(CongressException exception) {
 		Utils.showRefresh(this, R.string.error_connection);
 	}
-	
+
 	public void displayBill() {
 		if (bill.actions.size() > 0)
 			setListAdapter(new BillActionAdapter(this, bill.actions));
 		else
 			Utils.showEmpty(this, R.string.bill_actions_empty);
 	}
-	
+
 	protected class BillActionAdapter extends ArrayAdapter<Bill.Action> {
     	LayoutInflater inflater;
     	Resources resources;
@@ -84,17 +84,17 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
             inflater = LayoutInflater.from(context);
             resources = context.getResources();
         }
-        
+
         @Override
         public boolean isEnabled(int position) {
         	return false;
         }
-        
+
         @Override
         public boolean areAllItemsEnabled() {
         	return false;
         }
-        
+
         @Override
         public int getViewTypeCount() {
         	return 1;
@@ -103,37 +103,37 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 		public View getView(int position, View view, ViewGroup parent) {
 			if (view == null)
 				view = inflater.inflate(R.layout.bill_action, null);
-			
+
 			Bill.Action action = getItem(position);
-			
+
 			String timestamp = new SimpleDateFormat("MMM dd, yyyy").format(action.acted_at);
 			((TextView) view.findViewById(R.id.acted_at)).setText(timestamp);
 			((TextView) view.findViewById(R.id.text)).setText(action.text);
-			
+
 			TextView typeView = (TextView) view.findViewById(R.id.type);
 			String type = action.type;
 			if (type.equals("vote") || type.equals("vote2") || type.equals("vote-aux")) {
-				typeView.setText("Vote");
+				typeView.setText(R.string.vote);
 				typeView.setTextColor(resources.getColor(R.color.action_vote));
 			} else if (type.equals("enacted")) {
-				typeView.setText("Enacted");
+				typeView.setText(R.string.enacted);
 				typeView.setTextColor(resources.getColor(R.color.action_enacted));
 			} else if (type.equals("vetoed")) {
-				typeView.setText("Vetoed");
+				typeView.setText(R.string.vetoed);
 				typeView.setTextColor(resources.getColor(R.color.action_vetoed));
 			} else {
 				typeView.setText("");
 			}
-			
+
 			return view;
 		}
 
     }
-	
+
 	static class BillHistoryHolder {
 		LoadBillTask loadBillTask;
 		Bill bill;
-		
+
 		public BillHistoryHolder(LoadBillTask loadBillTask, Bill bill) {
 			this.loadBillTask = loadBillTask;
 			this.bill = bill;

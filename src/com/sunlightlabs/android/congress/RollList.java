@@ -25,17 +25,17 @@ import com.sunlightlabs.congress.services.RollService;
 
 public class RollList extends ListActivity {
 	private static final int ROLLS = 20;
-	
+
 	public static final int ROLLS_VOTER = 0;
 	public static final int ROLLS_LATEST = 1;
 	public static final int ROLLS_NOMINATIONS = 2;
-	
+
 	private ArrayList<Roll> rolls;
 	private LoadRollsTask loadRollsTask;
 
 	private Legislator voter;
 	private int type;
-	
+
 	private LoadingWrapper loading;
 
 	@Override
@@ -111,7 +111,7 @@ public class RollList extends ListActivity {
 			Utils.showBack(this, R.string.empty_rolls);
 			return;
 		}
-		
+
 		// remove the placeholder and add the new bills in the array
 		if (rolls.size() > 0) {
 			int lastIndex = rolls.size() - 1;
@@ -131,10 +131,10 @@ public class RollList extends ListActivity {
 
 	public void onLoadRolls(CongressException exception) {
 		if (rolls.size() > 0) {
-			
+
 			loading.getLoading().setVisibility(View.GONE);
 			loading.getRetryContainer().setVisibility(View.VISIBLE);
-			
+
 			Button retry = loading.getRetry();
 			retry.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
@@ -152,7 +152,7 @@ public class RollList extends ListActivity {
 		private LayoutInflater inflater;
 		private RollList context;
 		private Resources resources;
-		
+
 		private static final int ROLL = 0;
 		private static final int LOADING = 1;
 
@@ -172,7 +172,7 @@ public class RollList extends ListActivity {
 		public boolean isEnabled(int position) {
 			return !((position == getCount() - 1) && getItem(position) == null);
 		}
-		
+
 		@Override
 		public int getItemViewType(int position) {
 			if (getItem(position) != null)
@@ -180,7 +180,7 @@ public class RollList extends ListActivity {
 			else
 				return LOADING;
 		}
-		
+
 		@Override
 		public int getViewTypeCount() {
 			return 2;
@@ -206,22 +206,22 @@ public class RollList extends ListActivity {
 			ViewHolder holder;
 			if (view == null) {
 				view = inflater.inflate(R.layout.roll_item, null);
-				
+
 				holder = new ViewHolder();
 				holder.roll = (TextView) view.findViewById(R.id.roll);
 				holder.date = (TextView) view.findViewById(R.id.date);
 				holder.question = (TextView) view.findViewById(R.id.question);
 				holder.result = (TextView) view.findViewById(R.id.result);
-				
+
 				view.setTag(holder);
 			} else
 				holder = (ViewHolder) view.getTag();
-			
+
 			TextView msgView = holder.roll;
 			if (context.type == RollList.ROLLS_VOTER) {
 				Roll.Vote vote = roll.voter_ids.get(context.voter.bioguide_id);
 				if (vote == null || vote.vote == Roll.NOT_VOTING) {
-					msgView.setText("Did Not Vote");
+					msgView.setText(R.string.not_voting);
 					msgView.setTextColor(resources.getColor(android.R.color.white));
 					msgView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
 				} else if (vote.vote == Roll.OTHER) {
@@ -229,35 +229,35 @@ public class RollList extends ListActivity {
 					msgView.setTextColor(resources.getColor(android.R.color.white));
 					msgView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
 				} else if (vote.vote == Roll.YEA) {
-					msgView.setText("Yea");
+					msgView.setText(R.string.yea);
 					msgView.setTextColor(resources.getColor(R.color.yea));
 					msgView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 				} else if (vote.vote == Roll.NAY) {
-					msgView.setText("Nay");
+					msgView.setText(R.string.nay);
 					msgView.setTextColor(resources.getColor(R.color.nay));
 					msgView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 				} else if (vote.vote == Roll.PRESENT) {
-					msgView.setText("Present");
+					msgView.setText(R.string.present);
 					msgView.setTextColor(resources.getColor(android.R.color.white));
 					msgView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
 				}
-				
+
 			} else
 				msgView.setText(Utils.capitalize(roll.chamber) + " Roll No. " + roll.number);
-			
+
 			holder.roll = msgView;
-			
+
 			holder.date.setText(new SimpleDateFormat("MMM dd, yyyy").format(roll.voted_at));
 			holder.question.setText(roll.question);
 			holder.result.setText(resultFor(roll));
-				
+
 			return view;
 		}
-		
+
 		static class ViewHolder {
 			TextView roll, date, question, result;
 		}
-		
+
 		private String resultFor(Roll roll) {
 			String breakdown;
 			if (roll.otherVotes.isEmpty()) {
@@ -275,11 +275,11 @@ public class RollList extends ListActivity {
 						breakdown += "-";
 				}
 			}
-			
+
 			return roll.result + ", " + breakdown;
 		}
 	}
-	
+
 	private class LoadRollsTask extends AsyncTask<Void,Void,ArrayList<Roll>> {
 		private RollList context;
 		private CongressException exception;
@@ -334,7 +334,7 @@ public class RollList extends ListActivity {
 			this.loadRollsTask = loadRollsTask;
 		}
 	}
-	
+
 	static class LoadingWrapper {
 		private View base, loading, retryContainer;
 		private Button retry;
@@ -342,19 +342,19 @@ public class RollList extends ListActivity {
 		public LoadingWrapper(View base) {
 			this.base = base;
 		}
-		
+
 		public View getLoading() {
 			return loading == null ? loading = base.findViewById(R.id.loading_layout) : loading;
 		}
-		
+
 		public Button getRetry() {
 			return retry == null ? retry = (Button) base.findViewById(R.id.retry) : retry;
 		}
-		
+
 		public View getRetryContainer() {
 			return retryContainer == null ? retryContainer = base.findViewById(R.id.retry_container) : retryContainer;
 		}
-		
+
 		public View getBase() {
 			return base;
 		}

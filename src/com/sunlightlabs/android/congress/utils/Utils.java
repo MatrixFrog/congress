@@ -31,7 +31,7 @@ import com.sunlightlabs.congress.services.Sunlight;
 
 public class Utils {
 	private static Method setView = null;
-	
+
 	public static void setupDrumbone(Context context) {
 		Resources resources = context.getResources();
 		Drumbone.userAgent = resources.getString(R.string.drumbone_user_agent);
@@ -64,7 +64,7 @@ public class Utils {
 			.setClassName("com.sunlightlabs.android.congress", "com.sunlightlabs.android.congress.LegislatorLoader")
 			.putExtra("legislator_id", id);
 	}
-	
+
 	// Suitable for a direct link to a legislator, bypassing the LegislatorLoader entirely
 	public static Intent legislatorIntent(Context context, Legislator legislator) {
 		return new Intent(context, LegislatorTabs.class).putExtra("legislator", legislator);
@@ -86,13 +86,13 @@ public class Utils {
 	public static Intent billIntent(Context context, Class<?> cls, Bill bill) {
 		return new Intent(context, cls).putExtra("bill", bill);
 	}
-	
+
 	public static Intent rollIntent(Context context, Roll roll) {
 		return new Intent(context, RollInfo.class)
 			.putExtra("id", roll.id)
 			.putExtra("roll", roll);
 	}
-	
+
 	public static Intent rollIntent(Context context, String rollId) {
 		return new Intent(context, RollInfo.class)
 			.putExtra("id", rollId);
@@ -114,7 +114,7 @@ public class Utils {
 	public static Intent shortcutIntent(Context context, String billId, String code) {
 		Parcelable resource = Intent.ShortcutIconResource.fromContext(context, R.drawable.bill);
 		return new Intent()
-			.putExtra(Intent.EXTRA_SHORTCUT_INTENT, 
+			.putExtra(Intent.EXTRA_SHORTCUT_INTENT,
 				billIntent(billId, code).addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK))
 			.putExtra(Intent.EXTRA_SHORTCUT_NAME, Bill.formatCodeShort(code))
 			.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, resource);
@@ -126,7 +126,7 @@ public class Utils {
 
 	public static Intent shortcutIntent(Context context, String legislatorId, String name, Bitmap icon) {
 		Intent intent = new Intent()
-			.putExtra(Intent.EXTRA_SHORTCUT_INTENT, 
+			.putExtra(Intent.EXTRA_SHORTCUT_INTENT,
 					Utils.legislatorIntent(legislatorId).addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK))
 			.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
 
@@ -139,22 +139,22 @@ public class Utils {
 
 		return intent;
 	}
-	
+
 	public static Intent shortcutIntent(Context context, Roll roll) {
 		Intent rollIntent = new Intent(Intent.ACTION_MAIN)
 			.setClassName("com.sunlightlabs.android.congress", "com.sunlightlabs.android.congress.RollInfo")
 			.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
 			.putExtra("id", roll.id);
-		
+
 		Parcelable resource = Intent.ShortcutIconResource.fromContext(context, R.drawable.rolls);
 		String title = Utils.capitalize(roll.chamber) + " Roll No. " + roll.number;
-		
+
 		return new Intent()
 			.putExtra(Intent.EXTRA_SHORTCUT_INTENT, rollIntent)
 			.putExtra(Intent.EXTRA_SHORTCUT_NAME, title)
 			.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, resource);
 	}
-	
+
 	public static void installShortcutIcon(Context context, Legislator legislator, Bitmap icon) {
 		context.sendBroadcast(shortcutIntent(context, legislator, icon)
 				.setAction("com.android.launcher.action.INSTALL_SHORTCUT"));
@@ -199,7 +199,15 @@ public class Utils {
 			return text;
 	}
 
-	public static void showLoading(Activity activity) {
+	public static String surroundWithQuotes(String string) {
+    return "\"" + string + "\"";
+  }
+
+  public static String surroundWithParentheses(String string) {
+    return "(" + string + ")";
+  }
+
+  public static void showLoading(Activity activity) {
 		activity.findViewById(R.id.empty_message).setVisibility(View.GONE);
 		activity.findViewById(R.id.refresh).setVisibility(View.GONE);
 		activity.findViewById(R.id.loading).setVisibility(View.VISIBLE);
@@ -222,7 +230,7 @@ public class Utils {
 		TextView messageView = (TextView) activity.findViewById(R.id.empty_message);
 		messageView.setText(message);
 		messageView.setVisibility(View.VISIBLE);
-		activity.findViewById(R.id.back).setVisibility(View.VISIBLE);	
+		activity.findViewById(R.id.back).setVisibility(View.VISIBLE);
 	}
 
 	public static void showEmpty(Activity activity, int message) {
@@ -260,57 +268,57 @@ public class Utils {
 	}
 
 	public static String capitalize(String text) {
-		if(text == null) 
+		if(text == null)
 			return "";
 		if(text.length() == 0)
 			return text;
-		if(text.length() == 1) 
+		if(text.length() == 1)
 			return text.toUpperCase();
 		return text.substring(0, 1).toUpperCase() + text.substring(1);
 	}
-	
+
 	public static boolean hasShownFavoritesMessage(Context context) {
 		return getBooleanPreference(context, "favorites_toast", false);
 	}
-	
+
 	public static void markShownFavoritesMessage(Context context) {
 		setBooleanPreference(context, "favorites_toast", true);
 	}
-	
+
 	public static String getStringPreference(Context context, String key) {
 		return PreferenceManager.getDefaultSharedPreferences(context).getString(key, null);
 	}
-	
+
 	public static boolean setStringPreference(Context context, String key, String value) {
 		return PreferenceManager.getDefaultSharedPreferences(context).edit().putString(key, value).commit();
 	}
-	
+
 	public static boolean getBooleanPreference(Context context, String key, boolean defaultValue) {
 		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(key, defaultValue);
 	}
-	
+
 	public static boolean setBooleanPreference(Context context, String key, boolean value) {
 		return PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(key, value).commit();
 	}
-	
-	/* 
+
+	/*
 	 * Using reflection to support custom tabs for 1.6 and up, and default to regular tabs for 1.5.
 	 */
-	
+
 	static {
 		checkCustomTabs();
 	}
-	
+
 	// check for existence of TabHost.TabSpec#setIndicator(View)
 	private static void checkCustomTabs() {
 		try {
     	   setView = TabHost.TabSpec.class.getMethod("setIndicator", new Class[] { View.class } );
        } catch (NoSuchMethodException nsme) {}
 	}
-	
+
 	public static void addTab(Activity activity, TabHost tabHost, String tag, Intent intent, String name, Drawable backup) {
 		TabHost.TabSpec tab = tabHost.newTabSpec(tag).setContent(intent);
-	
+
 		if (setView != null) {
 			try {
 				setView.invoke(tab, tabView(activity, name));
@@ -327,10 +335,10 @@ public class Utils {
 			}
 		} else // default 1.5 tabs
 			tab.setIndicator(name, backup);
-		
+
 		tabHost.addTab(tab);
 	}
-	
+
 	public static View tabView(Context context, String name) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		View tab = inflater.inflate(R.layout.tab_1, null);
@@ -341,14 +349,14 @@ public class Utils {
 	public static String districtMapUrl(String title, String state, String district) {
 		String url = "http://data.politiwidgets.com/kml/";
 		String session = "110";
-		
+
 		if (title.equals("Sen"))
 			url += "states/" + state;
 		else
 			url += "cds/" + session + "/" + state + "-" + district;
-		
+
 		url += ".kml";
-		
+
 		return url;
 	}
 

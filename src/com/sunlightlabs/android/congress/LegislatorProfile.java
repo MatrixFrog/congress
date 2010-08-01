@@ -41,10 +41,10 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 	private Drawable avatar;
 	private ImageView picture;
 	private ArrayList<Committee> committees;
-	
+
 	// need to keep this here between setupControls() and displayCommittees(), not sure why
 	private View committeeHeader;
-	
+
 	private LoadPhotoTask loadPhotoTask;
 	private LoadCommitteesTask loadCommitteesTask;
 	private ShortcutImageTask shortcutImageTask;
@@ -52,22 +52,22 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         Utils.setupSunlight(this);
-        
+
 		legislator = (Legislator) getIntent().getExtras().getSerializable("legislator");
-		
+
         setupControls();
-        
+
         LegislatorProfileHolder holder = (LegislatorProfileHolder) getLastNonConfigurationInstance();
         if (holder != null)
         	holder.loadInto(this);
-        
+
         loadPhoto();
-        
+
         if (legislator.in_office)
         	loadCommittees();
-        
+
         if (shortcutImageTask != null)
         	shortcutImageTask.onScreenLoad(this);
 	}
@@ -76,7 +76,7 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 	public Object onRetainNonConfigurationInstance() {
 		return new LegislatorProfileHolder(loadPhotoTask, loadCommitteesTask, shortcutImageTask, committees);
 	}
-	
+
 	// committee callbacks and display function not being used at this time
 	public void loadCommittees() {
 		if (loadCommitteesTask != null)
@@ -89,16 +89,16 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 						.execute(legislator.getId());
 		}
 	}
-	
+
 	public void onLoadCommittees(CongressException exception) {
 		displayCommittees();
 	}
-	
+
 	public void onLoadCommittees(ArrayList<Committee> committees) {
 		this.committees = committees;
 		displayCommittees();
 	}
-	
+
 	public void displayCommittees() {
 		if (committees != null) {
 			if (committees.size() > 0) {
@@ -108,15 +108,15 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 				setListAdapter(adapter);
 			} else {
 				committeeHeader.findViewById(R.id.loading_spinner).setVisibility(View.GONE);
-				((TextView) committeeHeader.findViewById(R.id.loading_message)).setText("Belongs to no committees.");
+				((TextView) committeeHeader.findViewById(R.id.loading_message)).setText(R.string.belongs_to_no_committees);
 			}
 		} else {
 			committeeHeader.findViewById(R.id.loading_spinner).setVisibility(View.GONE);
-			((TextView) committeeHeader.findViewById(R.id.loading_message)).setText("Error loading committees.");
+			((TextView) committeeHeader.findViewById(R.id.loading_message)).setText(R.string.error_loading_committees);
 		}
 	}
-	
-	
+
+
 	public void loadPhoto() {
 		if (loadPhotoTask != null)
         	loadPhotoTask.onScreenLoad(this);
@@ -128,21 +128,21 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 						.execute(legislator.getId());
         }
 	}
-	
+
 	public void onLoadPhoto(Drawable avatar, Object tag) {
 		loadPhotoTask = null;
 		this.avatar = avatar;
 		displayAvatar();
 	}
-	
+
 	public void onCreateShortcutIcon(Bitmap icon) {
 		Utils.installShortcutIcon(this, legislator, icon);
 	}
-	
+
 	public Context getContext() {
 		return this;
 	}
-	
+
     public void displayAvatar() {
     	if (avatar != null)
     		picture.setImageDrawable(avatar);
@@ -155,7 +155,7 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
     		// do not bind a click event to the "no photo" avatar
     	}
     }
-    
+
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
     	Object tag = v.getTag();
@@ -171,22 +171,22 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 	    		sponsoredBills();
     	}
     }
-    
+
     public void callOffice() {
     	startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel://" + legislator.phone)));
     }
-    
+
     public void visitWebsite() {
     	startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(legislator.website)));
     }
-    
+
     public void votingRecord() {
     	Intent intent = new Intent(this, RollList.class)
     		.putExtra("type", RollList.ROLLS_VOTER)
     		.putExtra("voter", legislator);
     	startActivity(intent);
     }
-    
+
     public void sponsoredBills() {
     	Intent intent = new Intent(this, BillList.class)
     		.putExtra("type", BillList.BILLS_SPONSOR)
@@ -194,7 +194,7 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
     		.putExtra("sponsor_name", legislator.titledName());
     	startActivity(intent);
     }
-    
+
     public void launchCommittee(Committee committee) {
     	Intent intent = new Intent(this, LegislatorList.class)
     		.putExtra("type", LegislatorList.SEARCH_COMMITTEE)
@@ -206,23 +206,23 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 	public void districtMap() {
 		String url = Utils.districtMapUrl(legislator.title, legislator.state, legislator.district);
 		Uri uri = Uri.parse("geo:0,0?q=" + url);
-		Intent mapIntent = new Intent(Intent.ACTION_VIEW, uri); 
-		mapIntent.setData(uri); 
+		Intent mapIntent = new Intent(Intent.ACTION_VIEW, uri);
+		mapIntent.setData(uri);
 		startActivity(Intent.createChooser(mapIntent, getString(R.string.view_legislator_district)));
 	}
-	
+
 	public void setupControls() {
 		MergeAdapter adapter = new MergeAdapter();
 		LayoutInflater inflater = LayoutInflater.from(this);
-		
+
 		View mainView = inflater.inflate(R.layout.profile, null);
 		mainView.setEnabled(false);
-		
+
 		if (!legislator.in_office) {
 			mainView.findViewById(R.id.out_of_office_text).setVisibility(View.VISIBLE);
 			mainView.findViewById(R.id.website).setVisibility(View.GONE);
 		}
-		
+
 		mainView.findViewById(R.id.website).setOnClickListener(new View.OnClickListener() {
 			public void onClick(View arg0) {
 				visitWebsite();
@@ -233,18 +233,18 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 				districtMap();
 			}
 		});
-		
+
 		picture = (ImageView) mainView.findViewById(R.id.profile_picture);
-		
+
 		((TextView) mainView.findViewById(R.id.profile_party)).setText(partyName(legislator.party));
 		((TextView) mainView.findViewById(R.id.profile_state)).setText(Utils.stateCodeToName(this, legislator.state));
 		((TextView) mainView.findViewById(R.id.profile_domain)).setText(domainName(legislator.getDomain()));
 		((TextView) mainView.findViewById(R.id.profile_office)).setText(officeName(legislator.congress_office));
-		
+
 		adapter.addView(mainView);
-		
+
 		ArrayList<View> contactViews = new ArrayList<View>(3);
-		
+
 		String phone = legislator.phone;
 		if (legislator.in_office && phone != null && !phone.equals("")) {
 			View phoneView = inflater.inflate(R.layout.icon_list_item_2, null);
@@ -254,38 +254,38 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 			phoneView.setTag("phone");
 			contactViews.add(phoneView);
 		}
-		
+
 		View votingRecordView = inflater.inflate(R.layout.icon_list_item_1, null);
 		((TextView) votingRecordView.findViewById(R.id.text)).setText(R.string.voting_record);
 		((ImageView) votingRecordView.findViewById(R.id.icon)).setImageResource(R.drawable.rolls);
 		votingRecordView.setTag("voting");
 		contactViews.add(votingRecordView);
-		
+
 		View sponsoredView = inflater.inflate(R.layout.icon_list_item_1, null);
 		((TextView) sponsoredView.findViewById(R.id.text)).setText(R.string.sponsored_bills);
 		((ImageView) sponsoredView.findViewById(R.id.icon)).setImageResource(R.drawable.bill_multiple);
 		sponsoredView.setTag("sponsored");
 		contactViews.add(sponsoredView);
-		
+
 		adapter.addAdapter(new ViewArrayAdapter(this, contactViews));
-		
+
 		if (legislator.in_office) {
 			committeeHeader = inflater.inflate(R.layout.header_loading, null);
 			((TextView) committeeHeader.findViewById(R.id.header_text)).setText(R.string.committees);
 			((TextView) committeeHeader.findViewById(R.id.loading_message)).setText(R.string.loading_committees);
 			adapter.addView(committeeHeader);
 		}
-		
+
 		setListAdapter(adapter);
 	}
-	
-	@Override 
-    public boolean onCreateOptionsMenu(Menu menu) { 
-	    super.onCreateOptionsMenu(menu); 
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+	    super.onCreateOptionsMenu(menu);
 	    getMenuInflater().inflate(R.menu.legislator, menu);
 	    return true;
     }
-	
+
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch(item.getItemId()) {
@@ -308,13 +308,13 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
     	}
     	return true;
     }
-	
+
 	// For URLs that use subdomains (i.e. yarmuth.house.gov) return just that.
 	// For URLs that use paths (i.e. house.gov/wu) return just that.
 	// In both cases, remove the http://, the www., and any unneeded trailing stuff.
 	public static String websiteName(String url) {
 		String noPrefix = url.replaceAll("^http://(?:www\\.)?", "");
-		
+
 		String noSubdomain = "^((?:senate|house)\\.gov/.*?)/";
 		Pattern pattern = Pattern.compile(noSubdomain);
 		Matcher matcher = pattern.matcher(noPrefix);
@@ -323,7 +323,7 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 		else
 			return noPrefix.replaceAll("/.*$", "");
 	}
-	
+
 	public static String partyName(String code) {
 		if (code.equals("D"))
 			return "Democrat";
@@ -334,7 +334,7 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 		else
 			return "";
 	}
-	
+
 	public static String domainName(String domain) {
 		if (domain.equals("Upper Seat"))
 			return "Senior Senator";
@@ -343,18 +343,18 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 		else
 			return domain;
 	}
-	
+
 	public static String pronoun(String gender) {
 		if (gender.equals("M"))
 			return "his";
 		else // "F"
 			return "her";
 	}
-	
+
 	public static String officeName(String office) {
 		return office.replaceAll("(?:House|Senate) Office Building", "").trim();
 	}
-	
+
 	protected class CommitteeAdapter extends ArrayAdapter<Committee> {
 		LayoutInflater inflater;
 
@@ -366,38 +366,38 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
         // ignoring convertView as a recycling possibility, too small a list to be worth it
 		public View getView(int position, View convertView, ViewGroup parent) {
 			Committee committee = getItem(position);
-			
+
 			View view = inflater.inflate(R.layout.profile_committee, null);
 			((TextView) view.findViewById(R.id.name)).setText(committee.name);
 			view.setTag(committee);
-			
+
 			return view;
 		}
 
     }
-	
+
 	private class LoadCommitteesTask extends AsyncTask<String,Void,ArrayList<Committee>> {
 		private LegislatorProfile context;
 		private CongressException exception;
-		
+
 		public LoadCommitteesTask(LegislatorProfile context) {
 			this.context = context;
 		}
-		
+
 		public void onScreenLoad(LegislatorProfile context) {
 			this.context = context;
 		}
-		
+
 		@Override
 		public ArrayList<Committee> doInBackground(String... bioguideId) {
 			ArrayList<Committee> committees = new ArrayList<Committee>();
 			ArrayList<Committee> joint = new ArrayList<Committee>();
 			ArrayList<Committee> temp;
-			
+
 			try {
 				temp = CommitteeService.forLegislator(bioguideId[0]);
 			} catch (CongressException e) {
-				this.exception = new CongressException(e, "Error loading committees.");
+				this.exception = new CongressException(e, context.getString(R.string.error_loading_committees));
 				return null;
 			}
 			for (int i=0; i<temp.size(); i++) {
@@ -411,31 +411,31 @@ public class LegislatorProfile extends ListActivity implements LoadPhotoTask.Loa
 			committees.addAll(joint);
 			return committees;
 		}
-		
+
 		@Override
 		public void onPostExecute(ArrayList<Committee> committees) {
 			context.loadCommitteesTask = null;
-			
+
 			if (exception != null && committees == null)
 				context.onLoadCommittees(exception);
 			else
 				context.onLoadCommittees(committees);
 		}
 	}
-	
+
 	static class LegislatorProfileHolder {
 		LoadPhotoTask loadPhotoTask;
 		LoadCommitteesTask loadCommitteesTask;
 		ShortcutImageTask shortcutImageTask;
 		ArrayList<Committee> committees;
-		
+
 		LegislatorProfileHolder(LoadPhotoTask loadPhotoTask, LoadCommitteesTask loadCommitteesTask, ShortcutImageTask shortcutImageTask, ArrayList<Committee> committees) {
 			this.loadPhotoTask = loadPhotoTask;
 			this.loadCommitteesTask = loadCommitteesTask;
 			this.shortcutImageTask = shortcutImageTask;
 			this.committees = committees;
 		}
-		
+
 		public void loadInto(LegislatorProfile context) {
 			context.loadPhotoTask = loadPhotoTask;
 			context.loadCommitteesTask = loadCommitteesTask;

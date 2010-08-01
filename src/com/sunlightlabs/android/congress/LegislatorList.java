@@ -56,9 +56,9 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 	private LoadLegislatorsTask loadLegislatorsTask = null;
 
 	private HashMap<String,LoadPhotoTask> loadPhotoTasks = new HashMap<String,LoadPhotoTask>();
-	
+
 	private int type = -1;
-	
+
 	private String bill_id;
 
 	private String zipCode, lastName, state, committeeId, committeeName;
@@ -183,8 +183,8 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 	}
 
 	public void onLoadPhoto(Drawable photo, Object tag) {
-		loadPhotoTasks.remove((String) tag);
-		
+		loadPhotoTasks.remove(tag);
+
 		LegislatorAdapter.ViewHolder holder = new LegislatorAdapter.ViewHolder();
 		holder.bioguide_id = (String) tag;
 
@@ -210,31 +210,31 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 
 		Utils.setLoading(this, R.string.legislators_loading);
 		Utils.setTitleSize(this, 20);
-		
+
 		switch (type) {
 		case SEARCH_ZIP:
-			Utils.setTitle(this, "Legislators For " + zipCode);
+			Utils.setTitle(this, getString(R.string.legislators_for) + " " + zipCode);
 			break;
 		case SEARCH_LOCATION:
 			showHeader(); // make the location update header visible
 			displayAddress(address);
 			break;
 		case SEARCH_LASTNAME:
-			Utils.setTitle(this, "Legislators Named \"" + lastName + "\"");
+			Utils.setTitle(this, getString(R.string.legislators_named) + " " + Utils.surroundWithQuotes(lastName));
 			break;
 		case SEARCH_COMMITTEE:
 			Utils.setTitle(this, committeeName);
 			break;
 		case SEARCH_STATE:
-			Utils.setTitle(this, "Legislators from " + Utils.stateCodeToName(this, state));
+			Utils.setTitle(this, getString(R.string.legislators_from) + " " + Utils.stateCodeToName(this, state));
 			break;
 		case SEARCH_COSPONSORS:
-			Utils.setTitle(this, "Cosponsors for\n" + Bill.formatId(bill_id));
+			Utils.setTitle(this, getString(R.string.cosponsors_for) + "\n" + Bill.formatId(bill_id));
 			Utils.setTitleSize(this, 18);
 			Utils.setLoading(this, R.string.legislators_loading_cosponsors);
 			break;
 		default:
-			Utils.setTitle(this, "Legislator Search");
+			Utils.setTitle(this, R.string.legislator_search);
 		}
 	}
 
@@ -249,7 +249,7 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 		else
 			startActivity(Utils.legislatorIntent(this, legislator));
 	}
-	
+
 	private static class LegislatorAdapter extends ArrayAdapter<Legislator> {
 		LayoutInflater inflater;
 		LegislatorList context;
@@ -259,12 +259,12 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 			this.context = context;
 			inflater = LayoutInflater.from(context);
 		}
-		
+
 		@Override
         public boolean areAllItemsEnabled() {
         	return true;
         }
-        
+
         @Override
         public int getViewTypeCount() {
         	return 1;
@@ -275,18 +275,18 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 			ViewHolder holder;
 			if (convertView == null) {
 				view = inflater.inflate(R.layout.legislator_item, null);
-				
+
 				holder = new ViewHolder();
 				holder.name = (TextView) view.findViewById(R.id.name);
 				holder.position = (TextView) view.findViewById(R.id.position);
 				holder.photo = (ImageView) view.findViewById(R.id.photo);
-				
+
 				view.setTag(holder);
 			} else {
 				view = convertView;
 				holder = (ViewHolder) view.getTag();
 			}
-			
+
 			Legislator legislator = getItem(position);
 
 			// used as the hook to get the legislator image in place when it's loaded
@@ -312,7 +312,7 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 
 		public String positionFor(Legislator legislator) {
 			String district = legislator.district;
-			String stateName = Utils.stateCodeToName(context, legislator.state);			
+			String stateName = Utils.stateCodeToName(context, legislator.state);
 			String position = "";
 
 			if (district.equals("Senior Seat"))
@@ -326,15 +326,15 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 					position = legislator.fullTitle() + " for " + stateName;
 			} else
 				position = "Representative for " + stateName + "-" + district;
-			
-			return "(" + legislator.party + ") " + position; 
+
+			return Utils.surroundWithParentheses(legislator.party) + " " + position;
 		}
-		
+
 		static class ViewHolder {
 			TextView name, position;
 			ImageView photo;
 			String bioguide_id;
-			
+
 			@Override
 			public boolean equals(Object holder) {
 				ViewHolder other = (ViewHolder) holder;
@@ -344,7 +344,7 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 
 	}
 
-	
+
 	private class LoadLegislatorsTask extends AsyncTask<Void, Void, ArrayList<Legislator>> {
 		public LegislatorList context;
 
@@ -408,14 +408,14 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 		@Override
 		protected void onPostExecute(ArrayList<Legislator> legislators) {
 			context.legislators = legislators;
-			
+
 			// if there's only one result, don't even make them click it
 			if (legislators.size() == 1 && (context.type != SEARCH_LOCATION && context.type != SEARCH_COSPONSORS)) {
 				context.selectLegislator(legislators.get(0));
 				context.finish();
 			} else
 				context.displayLegislators();
-			
+
 			context.loadLegislatorsTask = null;
 		}
 	}
@@ -487,7 +487,7 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 	}
 
 	private void displayAddress(String address) {
-		Utils.setTitle(this, "Legislators For " + ((address == null || address.equals("")) ? "Your Location" : address));
+		Utils.setTitle(this, getString(R.string.legislators_for) + " " + ((address == null || address.equals("")) ? "Your Location" : address));
 	}
 
 	private void reloadLegislators() {
@@ -513,7 +513,7 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 
 		displayAddress(address);
 	}
-	
+
 	public void onLocationUpdateError() {
 		if (relocating) {
 			Log.d(TAG, "LegislatorList - onLocationUpdateError(): cannot update location");
@@ -523,7 +523,7 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 			Toast.makeText(this, R.string.location_update_fail, Toast.LENGTH_SHORT).show();
 		}
 	}
-	
+
 	public void onLocationChanged(Location location) {
 		latitude = location.getLatitude();
 		longitude = location.getLongitude();

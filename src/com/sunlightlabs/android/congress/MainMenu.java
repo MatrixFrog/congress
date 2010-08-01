@@ -112,7 +112,7 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 
 		billCursor = database.getBills();
 		startManagingCursor(billCursor);
-		
+
 		peopleCursor = database.getLegislators();
 		startManagingCursor(peopleCursor);
 
@@ -245,26 +245,26 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 		private View base;
 		private View loading;
 		private TextView text1;
-		private TextView text2;		
+		private TextView text2;
 
 		public SearchViewWrapper(View base) {
 			this.base = base;
-		}		
+		}
 		public TextView getText1() {
 			return (text1 == null) ? text1 = (TextView) this.base.findViewById(R.id.text_1) : text1;
-		}		
+		}
 		public TextView getText2() {
 			return (text2 == null) ? text2 = (TextView) this.base.findViewById(R.id.text_2) : text2;
-		}		
+		}
 		public View getLoading() {
 			return (loading == null) ? loading = this.base.findViewById(R.id.row_loading) : loading;
-		}		
+		}
 		public View getBase() {
 			return base;
-		}		
+		}
 		public ViewWrapper getWrapperTag() {
 			return (ViewWrapper) base.getTag();
-		}	
+		}
 	}
 
 	public void setupControls() {
@@ -274,19 +274,19 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 		// Votes
 		adapter.addView(inflateHeader(inflater, R.string.menu_votes_header));
 		adapter.addAdapter(new ViewArrayAdapter(this, setupVotesMenu(inflater)));
-		
+
 		// Legislators
 		adapter.addView(inflateHeader(inflater, R.string.menu_legislators_header));
 		adapter.addAdapter(new FavoriteLegislatorsAdapter(this, peopleCursor));
 		searchLocationAdapter = new ViewArrayAdapter(this, setupSearchMenu(inflater));
 		adapter.addAdapter(searchLocationAdapter);
 		adapter.addAdapter(new ViewArrayAdapter(this, setupCommitteeMenu(inflater)));
-		
+
 		// Bills
 		adapter.addView(inflateHeader(inflater, R.string.menu_bills_header));
 		adapter.addAdapter(new FavoriteBillsAdapter(this, billCursor));
 		adapter.addAdapter(new ViewArrayAdapter(this, setupBillMenu(inflater)));
-		
+
 		setListAdapter(adapter);
 	}
 
@@ -294,18 +294,18 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 		ArrayList<View> billViews = new ArrayList<View>();
 
 		billViews.add(inflateItem(inflater, R.drawable.bill_law, R.string.menu_bills_law, BILLS_LAW));
-		billViews.add(inflateItem(inflater, R.drawable.bill_recent, R.string.menu_bills_recent, BILLS_RECENT));	
+		billViews.add(inflateItem(inflater, R.drawable.bill_recent, R.string.menu_bills_recent, BILLS_RECENT));
 		billViews.add(inflateItem(inflater, R.drawable.bill_code, R.string.menu_bills_code, BILLS_CODE));
 
 		return billViews;
 	}
-	
+
 	private ArrayList<View> setupVotesMenu(LayoutInflater inflater) {
 		ArrayList<View> voteViews = new ArrayList<View>();
-		
+
 		voteViews.add(inflateItem(inflater, R.drawable.rolls_menu, R.string.menu_votes_latest, VOTES_LATEST));
 		voteViews.add(inflateItem(inflater, R.drawable.rolls_nominations, R.string.menu_votes_nominations, VOTES_NOMINATIONS));
-		
+
 		return voteViews;
 	}
 
@@ -317,11 +317,11 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 
 		View searchState = inflateItem(inflater, R.drawable.search_all, R.string.menu_legislators_state, SEARCH_STATE);
 		View searchName = inflateItem(inflater, R.drawable.search_lastname, R.string.menu_legislators_lastname, SEARCH_NAME);
-		View searchZip = inflateItem(inflater, R.drawable.search_zip, R.string.menu_legislators_zip, SEARCH_ZIP); 
+		View searchZip = inflateItem(inflater, R.drawable.search_zip, R.string.menu_legislators_zip, SEARCH_ZIP);
 
 		searchViews.add(searchLocationView.getBase());
 		searchViews.add(searchState);
-		searchViews.add(searchName);		
+		searchViews.add(searchName);
 		searchViews.add(searchZip);
 
 		return searchViews;
@@ -510,18 +510,18 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 			View aboutView = inflater.inflate(R.layout.about, null);
 
 			Spanned about1 = Html.fromHtml(
-					"Bill information provided by <a href=\"http://govtrack.us\">GovTrack</a>, through the Library of Congress.  Bill summaries written by the Congressional Research Service.<br/><br/>" +
-					"Legislator search and information powered by the <a href=\"http://services.sunlightlabs.com/api/\">Sunlight Labs API</a>.<br/><br/>" + 
-					"News mentions provided by the <a href=\"http://developer.yahoo.com/search/news/\">Yahoo! News API</a>, and Twitter search powered by <a href=\"http://www.winterwell.com/software/jtwitter.php\">JTwitter</a>."
+					getString(R.string.about_1a) +
+					getString(R.string.about_1b) +
+					getString(R.string.about_1c)
 			);
 			TextView aboutView1 = (TextView) aboutView.findViewById(R.id.about_1);
 			aboutView1.setText(about1);
 			aboutView1.setMovementMethod(LinkMovementMethod.getInstance());
 
 			Spanned about2 = Html.fromHtml(
-					"This app is made by <a href=\"http://sunlightlabs.com\">Sunlight Labs</a>, " + 
-					"a division of the <a href=\"http://sunlightfoundation.com\">Sunlight Foundation</a> " +
-					"that is dedicated to increasing government transparency through the power of technology."
+					getString(R.string.about_2a) +
+					getString(R.string.about_2b) +
+					getString(R.string.about_2c)
 			);
 			TextView aboutView2 = (TextView) aboutView.findViewById(R.id.about_2);
 			aboutView2.setText(about2);
@@ -558,7 +558,7 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 			Spanned changelogLast = Html.fromHtml(
 				"<b>&#183;</b> Search by committee for legislators<br/><br/>" +
 				"<b>&#183;</b> See a map of a legislator's district<br/><br/>" +
-				"<b>&#183;</b> Share bills on social networks through your apps<br/><br/>" +	
+				"<b>&#183;</b> Share bills on social networks through your apps<br/><br/>" +
 				"<b>&#183;</b> \"Star\" your favorite legislators and bills to add them to the main menu<br/><br/>"
 			);
 			((TextView) changelogView.findViewById(R.id.changelog)).setText(changelog);
@@ -577,16 +577,16 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 		}
 	}
 
-	@Override 
-	public boolean onCreateOptionsMenu(Menu menu) { 
-		super.onCreateOptionsMenu(menu); 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()) { 
+		switch(item.getItemId()) {
 		case R.id.feedback:
 			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getResources().getString(R.string.contact_email), null));
 			intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.contact_subject));
@@ -618,8 +618,8 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 					.requestLocationUpdate(this, handler, LocationManager.GPS_PROVIDER);
 			Log.d(TAG, "MainMenu - setupLocation(): request update from GPS");
 		}
-		else { 
-			address = AddressUpdater.getFromCache(location); 
+		else {
+			address = AddressUpdater.getFromCache(location);
 			if(address == null) {
 				toggleLocationEnabled(false);
 				toggleLocationLoading(true);
@@ -689,7 +689,7 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 		Log.d(TAG, "MainMenu - onAddressUpdate(): " + address);
 		this.address =  address;
 		addressUpdater = null;
-		displayAddress(address, true);	
+		displayAddress(address, true);
 
 		toggleLocationEnabled(true);
 		toggleLocationLoading(false);
@@ -723,7 +723,7 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 		favoritePeopleWrappers.get(bioguide_id).onLoadPhoto(photo, bioguide_id);
 		favoritePeopleWrappers.remove(bioguide_id);
 	}
-	
+
 	// Favorite bills adapter for the menu
 	public class FavoriteBillsAdapter extends CursorAdapter {
 
@@ -744,27 +744,27 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
 			View row = LayoutInflater.from(context).inflate(R.layout.favorite_bill, null);
 			FavoriteBillWrapper wrapper = new FavoriteBillWrapper(row);
-			
+
 			try {
 				wrapper.populateFrom(cursor);
 			} catch(CongressException e) {
 				Utils.alert(context, R.string.menu_favorite_bill_error);
 			}
-			
+
 			row.setTag(wrapper);
 			return row;
 		}
-		
+
 		public class FavoriteBillWrapper {
 			private View row;
 			private TextView code, title;
-			
+
 			public Bill bill;
 
 			public FavoriteBillWrapper(View row) {
 				this.row = row;
 			}
-			
+
 			public void populateFrom(Cursor c) throws CongressException {
 				bill = Database.loadBill(c);
 				getCode().setText(Bill.formatCode(bill.code));
@@ -775,18 +775,18 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 					title = bill.official_title;
 				getTitle().setText(Utils.truncate(title, 80));
 			}
-			
+
 			private TextView getCode() {
 				return code == null ? code = (TextView) row.findViewById(R.id.code) : code;
 			}
-			
+
 			private TextView getTitle() {
 				return title == null ? title = (TextView) row.findViewById(R.id.title) : title;
 			}
 		}
-			
+
 	}
-	
+
 	// Favorite legislators adapter for the menu
 	public class FavoriteLegislatorsAdapter extends CursorAdapter {
 
@@ -798,15 +798,15 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 		public void bindView(View view, Context context, Cursor cursor) {
 			((FavoriteLegislatorWrapper) view.getTag()).populateFrom(cursor, context);
 		}
-		
+
 		@Override
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
 			View row = LayoutInflater.from(context).inflate(R.layout.favorite_legislator, null);
 			FavoriteLegislatorWrapper wrapper = new FavoriteLegislatorWrapper(row);
-			
+
 			wrapper.populateFrom(cursor, context);
 			row.setTag(wrapper);
-			
+
 			return row;
 		}
 
@@ -815,7 +815,7 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 
 			private TextView name, position;
 			private ImageView photo;
-			
+
 			public Legislator legislator;
 
 			public FavoriteLegislatorWrapper(View row) {
@@ -824,15 +824,15 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 
 			void populateFrom(Cursor c, Context context) {
 				legislator = Database.loadLegislator(c);
-				
+
 				getName().setText(legislator.titledName());
-				String position = Legislator.partyName(legislator.party) + " from " 
+				String position = Legislator.partyName(legislator.party) + " from "
 					+ Utils.stateCodeToName(context, legislator.state);
 				getPosition().setText(position);
-				
+
 				BitmapDrawable picture = LegislatorImage.quickGetImage(LegislatorImage.PIC_MEDIUM,
 						legislator.bioguide_id, context);
-				
+
 				if (picture != null)
 					getPhoto().setImageDrawable(picture);
 				else {
@@ -855,15 +855,15 @@ public class MainMenu extends ListActivity implements LocationListenerTimeout,
 				else
 					getPhoto().setImageResource(R.drawable.no_photo_female);
 			}
-			
+
 			private TextView getName() {
 				return name == null ? name = (TextView) row.findViewById(R.id.name) : name;
 			}
-			
+
 			private TextView getPosition() {
 				return position == null ? position = (TextView) row.findViewById(R.id.position) : position;
 			}
-			
+
 			private ImageView getPhoto() {
 				return photo == null ? photo = (ImageView) row.findViewById(R.id.photo) : photo;
 			}

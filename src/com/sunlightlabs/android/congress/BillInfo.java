@@ -31,47 +31,47 @@ import com.sunlightlabs.congress.models.Bill;
 import com.sunlightlabs.congress.models.CongressException;
 import com.sunlightlabs.congress.models.Legislator;
 
-public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, LoadBillTask.LoadsBill {	
-	// fields from the intent 
+public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, LoadBillTask.LoadsBill {
+	// fields from the intent
 	private Bill bill;
 	private Legislator sponsor;
 
 	// fields fetched remotely
 	private String summary;
-	
+
 	private LoadBillTask loadBillTask;
 	private LoadPhotoTask loadPhotoTask;
 	private View loadingContainer, sponsorView;
-	
+
 	private Drawable sponsorPhoto;
-	
+
 	private SimpleDateFormat timelineFormat = new SimpleDateFormat("MMM dd, yyyy");
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		bill = (Bill) getIntent().getExtras().getSerializable("bill");
 		sponsor = bill.sponsor;
-		
+
 		setupControls();
-		
+
 		BillInfoHolder holder = (BillInfoHolder) getLastNonConfigurationInstance();
         if (holder != null) {
         	loadBillTask = holder.loadBillTask;
         	loadPhotoTask = holder.loadPhotoTask;
         	summary = holder.summary;
         }
-		
+
 		loadSummary();
 	}
-	
+
 	public void setupControls() {
 		LayoutInflater inflater = LayoutInflater.from(this);
 		MergeAdapter adapter = new MergeAdapter();
-		
+
 		View header = inflater.inflate(R.layout.bill_header, null);
-		
+
 		TextView titleView = (TextView) header.findViewById(R.id.title);
 		String title;
 		String short_title = bill.short_title;
@@ -83,64 +83,64 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 			titleView.setTextSize(16);
 		}
 		titleView.setText(title);
-		
+
 		addBillTimeline(header);
-		
+
 		adapter.addView(header);
-		
+
 		ArrayList<View> listViews = new ArrayList<View>();
 		if (sponsor != null) {
 			sponsorView = inflater.inflate(R.layout.bill_sponsor, null);
-			
+
 			String name = sponsor.title + ". " + sponsor.firstName() + " " + sponsor.last_name;
 			((TextView) sponsorView.findViewById(R.id.name)).setText(name);
-			
+
 			String description = Legislator.partyName(sponsor.party) + " from "
 					+ Utils.stateCodeToName(this, sponsor.state);
 			((TextView) sponsorView.findViewById(R.id.description)).setText(description);
-			
+
 			sponsorView.setTag("sponsor");
 			listViews.add(sponsorView);
-			
+
 			// kick off the photo loading task after the new bill data is all displayed
 			loadPhoto();
 		} else
 			adapter.addView(inflater.inflate(R.layout.bill_no_sponsor, null));
-		
+
 		if (bill.cosponsors_count > 0) {
 			View cosponsorView = inflater.inflate(R.layout.bill_cosponsors, null);
-			String cosponsorText = bill.cosponsors_count + (bill.cosponsors_count == 1 ? " Cosponsor" : " Cosponsors");
+			String cosponsorText = bill.cosponsors_count + (bill.cosponsors_count == 1 ? " Cosponsor" : " Cosponsors"); // TODO 161
 			((ImageView) cosponsorView.findViewById(R.id.icon)).setImageResource(R.drawable.committee);
 			((TextView) cosponsorView.findViewById(R.id.text)).setText(cosponsorText);
-			cosponsorView.setTag("cosponsors");
+			cosponsorView.setTag("cosponsors"); // TODO 161
 			listViews.add(cosponsorView);
 		}
-		
+
 		if (!listViews.isEmpty())
 			adapter.addAdapter(new ViewArrayAdapter(this, listViews));
-		
+
 		loadingContainer = inflater.inflate(R.layout.header_loading, null);
-		((TextView) loadingContainer.findViewById(R.id.header_text)).setText("Summary");
+		((TextView) loadingContainer.findViewById(R.id.header_text)).setText("Summary"); // TODO 161
 		adapter.addView(loadingContainer);
-		
-		((TextView) loadingContainer.findViewById(R.id.loading_message)).setText("Loading summary...");
+
+		((TextView) loadingContainer.findViewById(R.id.loading_message)).setText("Loading summary..."); // TODO 161
 		loadingContainer.findViewById(R.id.loading).setVisibility(View.VISIBLE);
-		
+
 		setListAdapter(adapter);
 	}
-	
+
 	public void displayPhoto() {
 		if (sponsorPhoto != null && sponsorView != null)
     		((ImageView) sponsorView.findViewById(R.id.picture)).setImageDrawable(sponsorPhoto);
 	}
-	
+
 	public void displaySummary() {
 		LayoutInflater inflater = LayoutInflater.from(this);
 		MergeAdapter adapter = (MergeAdapter) getListAdapter();
-		
+
 		loadingContainer.findViewById(R.id.loading).setVisibility(View.GONE);
-		
-		View summaryView; 
+
+		View summaryView;
 		if (summary != null && summary.length() > 0) {
 			summaryView = inflater.inflate(R.layout.bill_summary, null);
 			String formatted = Bill.formatSummary(summary, bill.short_title);
@@ -156,13 +156,13 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 		adapter.addView(summaryView);
 		setListAdapter(adapter);
 	}
-	
+
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		return new BillInfoHolder(loadBillTask, loadPhotoTask, summary);
 	}
-	
-	
+
+
 	public void loadSummary() {
 		if (loadBillTask != null)
 			loadBillTask.onScreenLoad(this);
@@ -173,7 +173,7 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 				loadBillTask = (LoadBillTask) new LoadBillTask(this, bill.id).execute("summary");
 		}
 	}
-	
+
 	public void loadPhoto() {
 		if (loadPhotoTask != null)
         	loadPhotoTask.onScreenLoad(this);
@@ -185,93 +185,96 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 						.execute(sponsor.getId());
         }
 	}
-	
+
 	public void onLoadBill(Bill bill) {
 		this.loadBillTask = null;
 		this.summary = bill.summary;
 		displaySummary();
 	}
-	
+
 	public void onLoadBill(CongressException exception) {
 		this.loadBillTask = null;
 		Utils.alert(this, R.string.error_connection);
 		finish();
 	}
-	
+
 	public void onLoadPhoto(Drawable photo, Object tag) {
 		sponsorPhoto = photo;
 		loadPhotoTask = null;
 		displayPhoto();
 	}
-	
+
 	public Context getContext() {
 		return this;
 	}
-	
-	
+
+
 	// Take the layout view given, and append all applicable bill_event TextViews
 	// describing the basic timeline of the bill
 	public void addBillTimeline(View header) {
 		ViewGroup inner = (ViewGroup) header.findViewById(R.id.header_inner);
-		
-		addTimelinePiece(inner, "Introduced on", bill.introduced_at.getTime());
-		
+		addTimelinePiece(inner, R.string.introduced_on, bill.introduced_at.getTime());
+
 		String house_result = bill.house_result;
 		long house_result_at = bill.house_result_at == null ? 0 : bill.house_result_at.getTime();
 		if (house_result != null && house_result_at > 0) {
-			if (house_result.equals("pass"))
-				addTimelinePiece(inner, "Passed the House on", house_result_at);
+			if (house_result.equals("pass")) // TODO 161
+				addTimelinePiece(inner, R.string.passed_the_house_on, house_result_at);
 			else if (house_result.equals("fail"))
-				addTimelinePiece(inner, "Failed the House on", house_result_at);
+				addTimelinePiece(inner, R.string.failed_the_house_on, house_result_at);
 		}
-		
+
 		String senate_result = bill.senate_result;
 		long senate_result_at = bill.senate_result_at == null ? 0 : bill.senate_result_at.getTime();
 		if (senate_result != null && senate_result_at > 0) {
 			if (senate_result.equals("pass"))
-				addTimelinePiece(inner, "Passed the Senate on", senate_result_at);
+				addTimelinePiece(inner, R.string.passed_the_senate_on, senate_result_at);
 			else if (senate_result.equals("fail"))
-				addTimelinePiece(inner, "Failed the Senate on", senate_result_at);
+				addTimelinePiece(inner, R.string.failed_the_senate_on, senate_result_at);
 		}
-		
+
 		long vetoed_at = bill.vetoed_at == null ? 0 : bill.vetoed_at.getTime();
 		if (bill.vetoed && vetoed_at > 0)
-			addTimelinePiece(inner, "Vetoed on", vetoed_at);
-		
+			addTimelinePiece(inner, R.string.vetoed_on, vetoed_at);
+
 		String override_house_result = bill.override_house_result;
 		long override_house_result_at = bill.override_house_result_at == null ? 0 : bill.override_house_result_at.getTime();
 		if (override_house_result != null && override_house_result_at > 0) {
 			if (override_house_result.equals("pass"))
-				addTimelinePiece(inner, "Override passed in the House on", override_house_result_at);
+				addTimelinePiece(inner, R.string.override_passed_in_the_house_on, override_house_result_at);
 			else if (override_house_result.equals("fail"))
-				addTimelinePiece(inner, "Override failed in the House on", override_house_result_at);
+				addTimelinePiece(inner, R.string.override_failed_in_the_house_on, override_house_result_at);
 		}
-		
+
 		String override_senate_result = bill.override_senate_result;
 		long override_senate_result_at = bill.override_house_result_at == null ? 0 : bill.override_senate_result_at.getTime();
 		if (override_senate_result != null && override_senate_result_at > 0) {
 			if (override_senate_result.equals("pass"))
-				addTimelinePiece(inner, "Override passed in the Senate on", override_senate_result_at);
+				addTimelinePiece(inner, R.string.override_passed_in_the_senate_on, override_senate_result_at);
 			else if (override_senate_result.equals("fail"))
-				addTimelinePiece(inner, "Override failed in the Senate on", override_senate_result_at);
+				addTimelinePiece(inner, R.string.override_failed_in_the_senate_on, override_senate_result_at);
 		}
-		
+
 		long awaiting_signature_since = bill.awaiting_signature_since == null ? 0 : bill.awaiting_signature_since.getTime();
 		if (bill.awaiting_signature && awaiting_signature_since > 0)
-			addTimelinePiece(inner, "Awaiting signature since", awaiting_signature_since);
-		
+			addTimelinePiece(inner, R.string.awaiting_signature_since, awaiting_signature_since);
+
 		long enacted_at = bill.enacted_at == null ? 0 : bill.enacted_at.getTime();
 		if (bill.enacted && enacted_at > 0)
-			addTimelinePiece(inner, "Enacted on", enacted_at);
+			addTimelinePiece(inner, R.string.enacted_on, enacted_at);
 	}
-	
+
+	public void addTimelinePiece(ViewGroup container, int stringId, long timestamp) {
+	  addTimelinePiece(container, getString(stringId), timestamp);
+	}
+
 	public void addTimelinePiece(ViewGroup container, String prefix, long timestamp) {
 		String date = prefix + " " + timelineFormat.format(new Date(timestamp));
 		TextView piece = (TextView) LayoutInflater.from(this).inflate(R.layout.bill_event, null);
 		piece.setText(date);
 		container.addView(piece);
 	}
-	
+
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
 		String type = (String) v.getTag();
@@ -284,14 +287,14 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 			startActivity(intent);
 		}
     }
-	
-	@Override 
-    public boolean onCreateOptionsMenu(Menu menu) { 
-	    super.onCreateOptionsMenu(menu); 
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+	    super.onCreateOptionsMenu(menu);
 	    getMenuInflater().inflate(R.menu.bill, menu);
 	    return true;
     }
-	
+
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch(item.getItemId()) {
@@ -317,7 +320,7 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
     	}
     	return true;
     }
-	
+
 	public int sizeOfTitle(String title) {
 		int length = title.length();
 		if (length <= 100)
@@ -331,12 +334,12 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 		else // should be truncated above this anyhow
 			return 12;
 	}
-	
+
 	static class BillInfoHolder {
 		LoadBillTask loadBillTask;
 		LoadPhotoTask loadPhotoTask;
 		String summary;
-		
+
 		public BillInfoHolder(LoadBillTask loadBillTask, LoadPhotoTask loadPhotoTask, String summary) {
 			this.loadBillTask = loadBillTask;
 			this.loadPhotoTask = loadPhotoTask;

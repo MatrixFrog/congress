@@ -25,14 +25,14 @@ public class BillVotes extends ListActivity implements LoadBillTask.LoadsBill {
 	private LoadBillTask loadBillTask;
 	private Bill bill;
 	private String id;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list);
-		
+
 		id = getIntent().getStringExtra("id");
-		
+
 		BillVotesHolder holder = (BillVotesHolder) getLastNonConfigurationInstance();
 		if (holder != null) {
 			this.loadBillTask = holder.loadBillTask;
@@ -40,50 +40,50 @@ public class BillVotes extends ListActivity implements LoadBillTask.LoadsBill {
 			if (loadBillTask != null)
 				loadBillTask.onScreenLoad(this);
 		}
-		
+
 		if (loadBillTask == null)
 			loadBill();
 	}
-	
+
 	public void loadBill() {
 		if (bill == null)
 			loadBillTask = (LoadBillTask) new LoadBillTask(this, id).execute("votes");
 		else
 			displayBill();
 	}
-	
+
 	public Object onRetainNonConfigurationInstance() {
 		return new BillVotesHolder(loadBillTask, bill);
 	}
-	
+
 	public Context getContext() {
 		return this;
 	}
-	
+
 	public void onLoadBill(Bill bill) {
 		this.loadBillTask = null;
 		this.bill = bill;
 		displayBill();
 	}
-	
+
 	public void onLoadBill(CongressException exception) {
 		Utils.showRefresh(this, R.string.error_connection);
 	}
-	
+
 	public void displayBill() {
 		if (bill.votes.size() > 0)
 			setListAdapter(new BillVoteAdapter(this, bill.votes));
 		else
 			Utils.showEmpty(this, R.string.bill_votes_empty);
 	}
-	
+
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
 		String rollId = (String) v.getTag();
     	if (rollId != null)
     		startActivity(Utils.rollIntent(this, rollId));
     }
-	
+
 	protected class BillVoteAdapter extends ArrayAdapter<Bill.Vote> {
     	LayoutInflater inflater;
     	Resources resources;
@@ -93,17 +93,17 @@ public class BillVotes extends ListActivity implements LoadBillTask.LoadsBill {
             inflater = LayoutInflater.from(context);
             resources = context.getResources();
         }
-        
+
         @Override
         public boolean isEnabled(int position) {
-        	return ((Bill.Vote) getItem(position)).roll_id != null;
+        	return (getItem(position)).roll_id != null;
         }
-        
+
         @Override
         public boolean areAllItemsEnabled() {
         	return false;
         }
-        
+
         @Override
         public int getViewTypeCount() {
         	return 1;
@@ -112,24 +112,24 @@ public class BillVotes extends ListActivity implements LoadBillTask.LoadsBill {
 		public View getView(int position, View view, ViewGroup parent) {
 			if (view == null)
 				view = inflater.inflate(R.layout.bill_vote, null);
-			
+
 			Bill.Vote vote = getItem(position);
-			
+
 			String timestamp = new SimpleDateFormat("MMM dd, yyyy").format(vote.voted_at);
 			((TextView) view.findViewById(R.id.voted_at)).setText(timestamp);
 			((TextView) view.findViewById(R.id.text)).setText(vote.text);
 			((TextView) view.findViewById(R.id.chamber)).setText("the " + Utils.capitalize(vote.chamber));
-			
+
 			TextView resultView = (TextView) view.findViewById(R.id.result);
 			String result = vote.result;
 			if (result.equals("pass")) {
 				resultView.setTextColor(resources.getColor(R.color.bill_passed));
-				resultView.setText("Passed");
+				resultView.setText(R.string.passed);
 			} else if (result.equals("fail")) {
 				resultView.setTextColor(resources.getColor(R.color.bill_failed));
-				resultView.setText("Failed");
+				resultView.setText(R.string.failed);
 			}
-			
+
 			String roll_id = vote.roll_id;
 			TextView typeMessage = (TextView) view.findViewById(R.id.type_message);
 			if (roll_id != null) {
@@ -143,16 +143,16 @@ public class BillVotes extends ListActivity implements LoadBillTask.LoadsBill {
 				typeMessage.setText(R.string.bill_vote_not_roll);
 				view.setTag(null);
 			}
-			
+
 			return view;
 		}
 
     }
-	
+
 	static class BillVotesHolder {
 		LoadBillTask loadBillTask;
 		Bill bill;
-		
+
 		public BillVotesHolder(LoadBillTask loadBillTask, Bill bill) {
 			this.loadBillTask = loadBillTask;
 			this.bill = bill;
