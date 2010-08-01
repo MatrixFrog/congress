@@ -8,11 +8,11 @@
     <string name="results">Results</string>
     <string name="error_loading_votes">Error loading votes.</string>
 
-    <string name="about_1a">Bill information provided by <a href="http://govtrack.us">GovTrack</a>, through the Library of Congress.  Bill summaries written by the Congressional Research Service.<br/><br/></string>
-    <string name="about_1b">Legislator search and information powered by the <a href="http://services.sunlightlabs.com/api/">Sunlight Labs API</a>.<br/><br/></string>
-    <string name="about_1c">News mentions provided by the <a href="http://developer.yahoo.com/search/news/">Yahoo! News API</a>, and Twitter search powered by <a href="http://www.winterwell.com/software/jtwitter.php">JTwitter</a>.</string>
-    <string name="about_2a">This app is made by <a href="http://sunlightlabs.com">Sunlight Labs</a>, </string>
-    <string name="about_2b">a division of the <a href="http://sunlightfoundation.com">Sunlight Foundation</a> </string>
+    <string name="about_1a">Bill information provided by &lt;a href="http://govtrack.us"&gt;GovTrack&lt;/a&gt;, through the Library of Congress.  Bill summaries written by the Congressional Research Service.&lt;br/&gt;&lt;br/&gt;</string>
+    <string name="about_1b">Legislator search and information powered by the &lt;a href="http://services.sunlightlabs.com/api/"&gt;Sunlight Labs API&lt;/a&gt;.&lt;br/&gt;&lt;br/&gt;</string>
+    <string name="about_1c">News mentions provided by the &lt;a href="http://developer.yahoo.com/search/news/"&gt;Yahoo! News API&lt;/a&gt;, and Twitter search powered by &lt;a href="http://www.winterwell.com/software/jtwitter.php"&gt;JTwitter&lt;/a&gt;.</string>
+    <string name="about_2a">This app is made by &lt;a href="http://sunlightlabs.com"&gt;Sunlight Labs&lt;/a&gt;, </string>
+    <string name="about_2b">a division of the &lt;a href="http://sunlightfoundation.com"&gt;Sunlight Foundation&lt;/a&gt; </string>
     <string name="about_2c">that is dedicated to increasing government transparency through the power of technology.</string>
     
     <string name="create_shortcuts">Legislator</string>
