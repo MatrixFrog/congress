@@ -65,7 +65,7 @@ public class BillTabs extends TabActivity {
 	}
 
 	public String shareText() {
-		String url = Bill.thomasUrl(bill.type, bill.number, bill.session);
+		String url = bill.getThomasUrl();
 		String short_title = bill.short_title;
 		if (short_title != null && !short_title.equals(""))
 			return "Check out the " + short_title + " on THOMAS: " + url;

@@ -127,37 +127,38 @@ public class Bill implements Serializable {
 			return code;
 	}
 
-	public static String govTrackType(String type) {
-		if (type.equals("hr"))
+	private String govTrackType() {
+		if (this.type.equals("hr"))
 			return "h";
-		else if (type.equals("hres"))
+		else if (this.type.equals("hres"))
 			return "hr";
-		else if (type.equals("hjres"))
+		else if (this.type.equals("hjres"))
 			return "hj";
-		else if (type.equals("hcres"))
+		else if (this.type.equals("hcres"))
 			return "hc";
-		else if (type.equals("s"))
+		else if (this.type.equals("s"))
 			return "s";
-		else if (type.equals("sres"))
+		else if (this.type.equals("sres"))
 			return "sr";
-		else if (type.equals("sjres"))
+		else if (this.type.equals("sjres"))
 			return "sj";
-		else if (type.equals("scres"))
+		else if (this.type.equals("scres"))
 			return "sc";
 		else
-			return type;
+			return this.type;
 	}
 
-	public static String thomasUrl(String type, int number, int session) {
-		return "http://tinythom.as/" + session + type + number;
+	public String getThomasUrl() {
+		return "http://tinythom.as/" + this.session + this.type + this.number;
 	}
 
-	public static String openCongressUrl(String type, int number, int session) {
-		return "http://www.opencongress.org/bill/" + session + "-" + govTrackType(type) + number + "/show";
+	public String getOpenCongressUrl() {
+		return "http://www.opencongress.org/bill/" + this.session + "-" + govTrackType() + this.number + "/show";
 	}
 
-	public static String govTrackUrl(String type, int number, int session) {
-		return "http://www.govtrack.us/congress/bill.xpd?bill=" + govTrackType(type) + session + "-" + number;
+	public String getGovTrackUrl() {
+		return "http://www.govtrack.us/congress/bill.xpd?bill="
+		       + govTrackType() + this.session + "-" + this.number;
 	}
 
 	public static String formatSummary(String summary, String short_title) {
@@ -172,7 +173,7 @@ public class Bill implements Serializable {
 		return formatted;
 	}
 
-	public static String displayTitle(Bill bill) {
-		return (bill.short_title != null) ? bill.short_title : bill.official_title;
+	public String displayTitle() {
+		return (this.short_title != null) ? this.short_title : this.official_title;
 	}
 }
