@@ -2,6 +2,7 @@ package com.sunlightlabs.congress.services;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
@@ -15,27 +16,27 @@ import com.sunlightlabs.congress.models.Bill.Action;
 import com.sunlightlabs.congress.models.Bill.Vote;
 
 public class BillService {
-	
+
 	/* Main methods */
-	
-	public static ArrayList<Bill> recentlyIntroduced(int n, int p) throws CongressException {
+
+	public static List<Bill> recentlyIntroduced(int n, int p) throws CongressException {
 		return billsFor(Drumbone.url("bills",
 				"order=introduced_at&sections=basic,sponsor&per_page=" + n + "&page=" + p));
 	}
 
-	public static ArrayList<Bill> recentLaws(int n, int p) throws CongressException {
+	public static List<Bill> recentLaws(int n, int p) throws CongressException {
 		return billsFor(Drumbone
 				.url("bills", "order=enacted_at&enacted=true&sections=basic,sponsor&per_page=" + n
 						+ "&page=" + p));
 	}
 
-	public static ArrayList<Bill> recentlySponsored(int n, String sponsorId, int p)
+	public static List<Bill> recentlySponsored(int n, String sponsorId, int p)
 			throws CongressException {
 		return billsFor(Drumbone.url("bills", "order=introduced_at&sponsor_id=" + sponsorId
 				+ "&sections=basic,sponsor&per_page=" + n + "&page=" + p));
 	}
 
-	public static ArrayList<Bill> latestVotes(int n, int p) throws CongressException {
+	public static List<Bill> latestVotes(int n, int p) throws CongressException {
 		return billsFor(Drumbone.url("bills",
 				"order=last_vote_at&sections=basic,sponsor,votes&per_page=" + n + "&page=" + p));
 	}
@@ -43,11 +44,11 @@ public class BillService {
 	public static Bill find(String id, String sections) throws CongressException {
 		return billFor(Drumbone.url("bill", "bill_id=" + id + "&sections=" + sections));
 	}
-	
+
 	public static Date parseDate(String date) throws DateParseException {
 		return DateUtils.parseDate(date, Drumbone.dateFormat);
 	}
-	
+
 	/* JSON parsers, also useful for other service endpoints within this package */
 
 	protected static Bill fromDrumbone(JSONObject json) throws JSONException, DateParseException {
@@ -135,11 +136,11 @@ public class BillService {
 		if (!json.isNull("cosponsors")) {
 			JSONArray cosponsorObjects = json.getJSONArray("cosponsors");
 			int length = cosponsorObjects.length();
-			
+
 			for (int i=0; i<length; i++)
 				bill.cosponsors.add(LegislatorService.fromDrumbone(cosponsorObjects.getJSONObject(i)));
 		}
-		
+
 		if (!json.isNull("votes")) {
 			JSONArray voteObjects = json.getJSONArray("votes");
 			int length = voteObjects.length();
@@ -163,13 +164,13 @@ public class BillService {
 			for (int i = 0; i < length; i++)
 				bill.actions.add(0, actionFromDrumbone(actionObjects.getJSONObject(i)));
 		}
-		
+
 		return bill;
 	}
-	
+
 	protected static Vote voteFromDrumbone(JSONObject json) throws JSONException, DateParseException {
 		Vote vote = new Vote();
-		
+
 		vote.result = json.getString("result");
 		vote.text = json.getString("text");
 		vote.how = json.getString("how");
@@ -189,8 +190,8 @@ public class BillService {
 		action.acted_at = DateUtils.parseDate(json.getString("acted_at"), Drumbone.dateFormat);
 		return action;
 	}
-	
-	
+
+
 	/* Private helpers for loading single or plural bill objects */
 
 	private static Bill billFor(String url) throws CongressException {
@@ -204,9 +205,9 @@ public class BillService {
 		}
 	}
 
-	private static ArrayList<Bill> billsFor(String url) throws CongressException {
+	private static List<Bill> billsFor(String url) throws CongressException {
 		String rawJSON = Drumbone.fetchJSON(url);
-		ArrayList<Bill> bills = new ArrayList<Bill>();
+		List<Bill> bills = new ArrayList<Bill>();
 		try {
 			JSONArray results = new JSONObject(rawJSON).getJSONArray("bills");
 
@@ -219,7 +220,7 @@ public class BillService {
 		} catch (DateParseException e) {
 			throw new CongressException(e, "Problem parsing a date in the JSON from " + url);
 		}
-		
+
 		return bills;
 	}
 

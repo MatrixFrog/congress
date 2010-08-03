@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -52,10 +54,10 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 
 	public final static String TAG = "CONGRESS";
 
-	private ArrayList<Legislator> legislators = null;
+	private List<Legislator> legislators = null;
 	private LoadLegislatorsTask loadLegislatorsTask = null;
 
-	private HashMap<String,LoadPhotoTask> loadPhotoTasks = new HashMap<String,LoadPhotoTask>();
+	private Map<String,LoadPhotoTask> loadPhotoTasks = new HashMap<String,LoadPhotoTask>();
 
 	private int type = -1;
 
@@ -254,7 +256,7 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 		LayoutInflater inflater;
 		LegislatorList context;
 
-		public LegislatorAdapter(LegislatorList context, ArrayList<Legislator> items) {
+		public LegislatorAdapter(LegislatorList context, List<Legislator> items) {
 			super(context, 0, items);
 			this.context = context;
 			inflater = LayoutInflater.from(context);
@@ -345,7 +347,7 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 	}
 
 
-	private class LoadLegislatorsTask extends AsyncTask<Void, Void, ArrayList<Legislator>> {
+	private class LoadLegislatorsTask extends AsyncTask<Void, Void, List<Legislator>> {
 		public LegislatorList context;
 
 		public LoadLegislatorsTask(LegislatorList context) {
@@ -358,11 +360,11 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 		}
 
 		@Override
-		protected ArrayList<Legislator> doInBackground(Void... nothing) {
-			ArrayList<Legislator> legislators = new ArrayList<Legislator>();
-			ArrayList<Legislator> lower = new ArrayList<Legislator>();
+		protected List<Legislator> doInBackground(Void... nothing) {
+			List<Legislator> legislators = new ArrayList<Legislator>();
+			List<Legislator> lower = new ArrayList<Legislator>();
 
-			ArrayList<Legislator> temp;
+			List<Legislator> temp;
 			try {
 				switch (context.type) {
 				case SEARCH_ZIP:
@@ -406,7 +408,7 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 		}
 
 		@Override
-		protected void onPostExecute(ArrayList<Legislator> legislators) {
+		protected void onPostExecute(List<Legislator> legislators) {
 			context.legislators = legislators;
 
 			// if there's only one result, don't even make them click it
@@ -421,9 +423,9 @@ public class LegislatorList extends ListActivity implements LoadPhotoTask.LoadsP
 	}
 
 	static class LegislatorListHolder {
-		ArrayList<Legislator> legislators;
+		List<Legislator> legislators;
 		LoadLegislatorsTask loadLegislatorsTask;
-		HashMap<String,LoadPhotoTask> loadPhotoTasks;
+		Map<String,LoadPhotoTask> loadPhotoTasks;
 
 		AddressUpdater addressUpdater;
 		String address;

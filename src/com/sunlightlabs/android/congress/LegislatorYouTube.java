@@ -2,6 +2,7 @@ package com.sunlightlabs.android.congress;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -44,7 +45,7 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
 	private Video[] videos;
 
 	private LoadVideosTask loadVideosTask = null;
-	private HashMap<Integer, LoadYoutubeThumbTask> loadThumbTasks = new HashMap<Integer, LoadYoutubeThumbTask>();
+	private Map<Integer, LoadYoutubeThumbTask> loadThumbTasks = new HashMap<Integer, LoadYoutubeThumbTask>();
 
 	public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
@@ -256,7 +257,7 @@ public class LegislatorYouTube extends ListActivity implements LoadsThumb {
     static class LegislatorYouTubeHolder {
 		Video[] videos;
 		LoadVideosTask loadVideosTask;
-		HashMap<Integer, LoadYoutubeThumbTask> loadThumbTasks;
+		Map<Integer, LoadYoutubeThumbTask> loadThumbTasks;
 	}
 
 

@@ -1,6 +1,6 @@
 package com.sunlightlabs.android.congress.utils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.view.View;
@@ -14,7 +14,7 @@ import android.widget.ArrayAdapter;
  */
 public class ViewArrayAdapter extends ArrayAdapter<View> {
 
-	public ViewArrayAdapter(Activity context, ArrayList<View> items) {
+	public ViewArrayAdapter(Activity context, List<View> items) {
 		super(context, 0, items);
 	}
 
@@ -31,7 +31,7 @@ public class ViewArrayAdapter extends ArrayAdapter<View> {
 	public boolean isEnabled(int position) {
 		View view = getItem(position);
 		if(view.getTag() instanceof ViewWrapper) {
-			ViewWrapper viewWrapper = (ViewWrapper) view.getTag(); 
+			ViewWrapper viewWrapper = (ViewWrapper) view.getTag();
 			return viewWrapper.isEnabled();
 		}
 		return true; // if we don't use the ViewWrapper class, all items are enabled

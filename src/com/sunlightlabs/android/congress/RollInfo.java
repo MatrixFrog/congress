@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -34,13 +36,14 @@ import com.sunlightlabs.congress.models.Bill;
 import com.sunlightlabs.congress.models.CongressException;
 import com.sunlightlabs.congress.models.Legislator;
 import com.sunlightlabs.congress.models.Roll;
+import com.sunlightlabs.congress.models.Roll.Vote;
 import com.sunlightlabs.congress.services.RollService;
 
 public class RollInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto {
 	private String id;
 
 	private Roll roll;
-	private HashMap<String,Roll.Vote> voters;
+	private Map<String, Vote> voters;
 
 	private Database database;
 	private Cursor peopleCursor;
@@ -48,20 +51,20 @@ public class RollInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto {
 	private LoadRollTask loadRollTask, loadVotersTask;
 	private View header, loadingView;
 
-	private HashMap<String,LoadPhotoTask> loadPhotoTasks = new HashMap<String,LoadPhotoTask>();
-	private ArrayList<String> queuedPhotos = new ArrayList<String>();
+	private Map<String,LoadPhotoTask> loadPhotoTasks = new HashMap<String,LoadPhotoTask>();
+	private List<String> queuedPhotos = new ArrayList<String>();
 
 	private static final int MAX_PHOTO_TASKS = 10;
 	private static final int MAX_QUEUE_TASKS = 20;
 
 	// keep the adapters and arrays as members so we can toggle freely between them
-	private ArrayList<Roll.Vote> starred = new ArrayList<Roll.Vote>();
-	private ArrayList<Roll.Vote> rest = new ArrayList<Roll.Vote>();
+	private List<Roll.Vote> starred = new ArrayList<Roll.Vote>();
+	private List<Roll.Vote> rest = new ArrayList<Roll.Vote>();
 	private VoterAdapter starredAdapter;
 	private VoterAdapter restAdapter;
 
 	private String currentTab = null;
-	private HashMap<String,ArrayList<Roll.Vote>> voterBreakdown = new HashMap<String,ArrayList<Roll.Vote>>();
+	private Map<String,List<Roll.Vote>> voterBreakdown = new HashMap<String,List<Roll.Vote>>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -195,7 +198,7 @@ public class RollInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto {
 			((TextView) bill.findViewById(R.id.code)).setText(Bill.formatId(roll.bill_id));
 			bill.setTag("bill_id");
 
-			ArrayList<View> billArray = new ArrayList<View>(1);
+			List<View> billArray = new ArrayList<View>(1);
 			billArray.add(bill);
 			adapter.addAdapter(new ViewArrayAdapter(this, billArray));
 		}
@@ -300,8 +303,8 @@ public class RollInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto {
 	// depends on setupTabs having been called, and that every vote a legislator has cast
 	// has an entry in voterBreakdown, as created in setupTabs
 	public void displayVoters() {
-		// sort HashMap of voters into the voterBreakdown hashmap by vote type
-		ArrayList<Roll.Vote> allVoters = new ArrayList<Roll.Vote>(voters.values());
+		// sort map of voters into the voterBreakdown map by vote type
+		List<Roll.Vote> allVoters = new ArrayList<Roll.Vote>(voters.values());
 		Collections.sort(allVoters); // sort once, all at once
 
 		Iterator<Roll.Vote> iter = allVoters.iterator();
@@ -351,7 +354,7 @@ public class RollInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto {
 		int starredCount = peopleCursor.getCount();
 
 		if (starredCount > 0) {
-			ArrayList<String> starredIds = new ArrayList<String>(starredCount);
+			List<String> starredIds = new ArrayList<String>(starredCount);
 
 			peopleCursor.moveToFirst();
 			do {
@@ -479,7 +482,7 @@ public class RollInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto {
 
 		private boolean starred;
 
-	    public VoterAdapter(RollInfo context, ArrayList<Roll.Vote> items) {
+	    public VoterAdapter(RollInfo context, List<Roll.Vote> items) {
 	        super(context, 0, items);
 	        this.context = context;
 	        this.resources = context.getResources();
@@ -487,7 +490,7 @@ public class RollInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto {
 	        this.starred = false;
 	    }
 
-	    public VoterAdapter(RollInfo context, ArrayList<Roll.Vote> items, boolean starred) {
+	    public VoterAdapter(RollInfo context, List<Roll.Vote> items, boolean starred) {
 	        super(context, 0, items);
 	        this.context = context;
 	        this.resources = context.getResources();
@@ -617,11 +620,11 @@ public class RollInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto {
 	static class RollInfoHolder {
 		private LoadRollTask loadRollTask, loadVotersTask;
 		private Roll roll;
-		private HashMap<String,Roll.Vote> voters;
-		HashMap<String,LoadPhotoTask> loadPhotoTasks;
+		private Map<String,Roll.Vote> voters;
+		Map<String,LoadPhotoTask> loadPhotoTasks;
 		private String currentTab;
 
-		public RollInfoHolder(LoadRollTask loadRollTask, Roll roll, LoadRollTask loadVotersTask, HashMap<String,Roll.Vote> voters, HashMap<String,LoadPhotoTask> loadPhotoTasks, String currentTab) {
+		public RollInfoHolder(LoadRollTask loadRollTask, Roll roll, LoadRollTask loadVotersTask, Map<String,Roll.Vote> voters, Map<String,LoadPhotoTask> loadPhotoTasks, String currentTab) {
 			this.loadRollTask = loadRollTask;
 			this.roll = roll;
 			this.loadVotersTask = loadVotersTask;

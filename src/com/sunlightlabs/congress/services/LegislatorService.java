@@ -1,6 +1,7 @@
 package com.sunlightlabs.congress.services;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,18 +13,18 @@ import com.sunlightlabs.congress.models.CongressException;
 import com.sunlightlabs.congress.models.Legislator;
 
 public class LegislatorService {
-	
+
 	/* Main methods */
-	
-	public static ArrayList<Legislator> allWhere(String key, String value) throws CongressException {
+
+	public static List<Legislator> allWhere(String key, String value) throws CongressException {
 		return legislatorsFor(Sunlight.url("legislators.getList", key + "=" + Uri.encode(value))); // encode user entered data
 	}
 
-	public static ArrayList<Legislator> allForZipCode(String zip) throws CongressException {
+	public static List<Legislator> allForZipCode(String zip) throws CongressException {
 		return legislatorsFor(Sunlight.url("legislators.allForZip", "zip=" + Uri.encode(zip))); // encode user entered data
 	}
 
-	public static ArrayList<Legislator> allForLatLong(double latitude, double longitude)
+	public static List<Legislator> allForLatLong(double latitude, double longitude)
 			throws CongressException {
 		return legislatorsFor(Sunlight.url("legislators.allForLatLong", "latitude=" + latitude
 				+ "&longitude=" + longitude));
@@ -32,7 +33,7 @@ public class LegislatorService {
 	public static Legislator find(String bioguideId) throws CongressException {
 		return legislatorFor(Sunlight.url("legislators.get", "bioguide_id=" + bioguideId + "&all_legislators=true"));
 	}
-	
+
 	/* JSON parsers, also useful for other service endpoints within this package */
 
 	protected static Legislator fromDrumbone(JSONObject json) throws JSONException {
@@ -42,9 +43,9 @@ public class LegislatorService {
 			legislator.bioguide_id = json.getString("bioguide_id");
 		if (!json.isNull("govtrack_id"))
 			legislator.govtrack_id = json.getString("govtrack_id");
-		
+
 		legislator.setId(legislator.bioguide_id);
-		
+
 		if (!json.isNull("in_office"))
 			legislator.in_office = json.getBoolean("in_office");
 
@@ -89,12 +90,12 @@ public class LegislatorService {
 			legislator.bioguide_id = json.getString("bioguide_id");
 		if (!json.isNull("govtrack_id"))
 			legislator.govtrack_id = json.getString("govtrack_id");
-		
+
 		legislator.setId(legislator.bioguide_id);
 
 		if (!json.isNull("in_office"))
 			legislator.in_office = json.getBoolean("in_office");
-		
+
 		if (!json.isNull("firstname"))
 			legislator.first_name = json.getString("firstname");
 		if (!json.isNull("lastname"))
@@ -111,7 +112,7 @@ public class LegislatorService {
 			legislator.district = json.getString("district");
 		if (!json.isNull("title"))
 			legislator.title = json.getString("title");
-		
+
 		legislator.chamber = legislator.title.equals("Sen") ? "senate" : "house";
 
 		if (!json.isNull("gender"))
@@ -126,11 +127,11 @@ public class LegislatorService {
 			legislator.youtube_url = json.getString("youtube_url");
 		if (!json.isNull("twitter_id"))
 			legislator.twitter_id = json.getString("twitter_id");
-		
+
 		return legislator;
 	}
-	
-	
+
+
 	/* Private helpers for loading single or plural bill objects */
 
 	private static Legislator legislatorFor(String url) throws CongressException {
@@ -143,9 +144,9 @@ public class LegislatorService {
 		}
 	}
 
-	private static ArrayList<Legislator> legislatorsFor(String url) throws CongressException {
+	private static List<Legislator> legislatorsFor(String url) throws CongressException {
 		String rawJSON = Sunlight.fetchJSON(url);
-		ArrayList<Legislator> legislators = new ArrayList<Legislator>();
+		List<Legislator> legislators = new ArrayList<Legislator>();
 		try {
 			JSONArray results = new JSONObject(rawJSON).getJSONObject("response").getJSONArray(
 					"legislators");

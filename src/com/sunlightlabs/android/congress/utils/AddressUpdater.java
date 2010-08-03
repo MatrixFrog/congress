@@ -3,6 +3,7 @@ package com.sunlightlabs.android.congress.utils;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.location.Address;
@@ -15,7 +16,7 @@ import com.sunlightlabs.congress.models.CongressException;
 public class AddressUpdater extends AsyncTask<Location, Void, String> {
 	// cache the addresses obtained for different locations
 	private static final int MAX_CACHE_SIZE = 10;
-	private static LinkedHashMap<String, String> cache = new LinkedHashMap<String, String>();	
+	private static Map<String, String> cache = new LinkedHashMap<String, String>();
 
 	private AddressUpdateable<? extends Context> context;
 
@@ -52,17 +53,17 @@ public class AddressUpdater extends AsyncTask<Location, Void, String> {
 
 	@Override
 	protected String doInBackground(Location... params) {
-		if(params == null || params.length == 0) 
+		if(params == null || params.length == 0)
 			return null;
 
 		try {
-			Location location = params[0];	
+			Location location = params[0];
 			String address = "";
 
 			List<Address> addresses = new Geocoder((Context) context).getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 			if (addresses != null && addresses.size() > 0) {
 				address = getArea(addresses.get(0));
-				addToCache(location, address); 
+				addToCache(location, address);
 				return address;
 			}
 		} catch (IOException e) {}
