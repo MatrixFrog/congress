@@ -148,9 +148,10 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 		} else {
 			summaryView = inflater.inflate(R.layout.bill_no_summary, null);
 			TextView noSummary = (TextView) summaryView.findViewById(R.id.no_summary);
-			noSummary.setText(Html.fromHtml("No summary available.<br/><br/><a href=\""
-					+ Bill.thomasUrl(bill.type, bill.number, bill.session)
-					+ "\">Read the text of this bill on THOMAS.</a>"));
+			noSummary.setText(Html.fromHtml(getString(R.string.no_summary_available) +
+			    "<br/><br/><a href=\""
+					+ bill.getThomasUrl() + "\">"
+					+ getString(R.string.read_bill_on_thomas) + "</a>"));
         	noSummary.setMovementMethod(LinkMovementMethod.getInstance());
 		}
 		adapter.addView(summaryView);
