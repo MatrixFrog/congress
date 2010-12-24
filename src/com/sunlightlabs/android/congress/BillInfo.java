@@ -110,10 +110,10 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 
 		if (bill.cosponsors_count > 0) {
 			View cosponsorView = inflater.inflate(R.layout.bill_cosponsors, null);
-			String cosponsorText = bill.cosponsors_count + (bill.cosponsors_count == 1 ? " Cosponsor" : " Cosponsors"); // TODO 161
+			String cosponsorText = bill.cosponsors_count + " " + (bill.cosponsors_count == 1 ? this.getString(R.string.cosponsor) : this.getString(R.string.cosponsors));
 			((ImageView) cosponsorView.findViewById(R.id.icon)).setImageResource(R.drawable.committee);
 			((TextView) cosponsorView.findViewById(R.id.text)).setText(cosponsorText);
-			cosponsorView.setTag("cosponsors"); // TODO 161
+			cosponsorView.setTag("cosponsors");
 			listViews.add(cosponsorView);
 		}
 
@@ -121,10 +121,10 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 			adapter.addAdapter(new ViewArrayAdapter(this, listViews));
 
 		loadingContainer = inflater.inflate(R.layout.header_loading, null);
-		((TextView) loadingContainer.findViewById(R.id.header_text)).setText("Summary"); // TODO 161
+		((TextView) loadingContainer.findViewById(R.id.header_text)).setText(R.string.summary);
 		adapter.addView(loadingContainer);
 
-		((TextView) loadingContainer.findViewById(R.id.loading_message)).setText("Loading summary..."); // TODO 161
+		((TextView) loadingContainer.findViewById(R.id.loading_message)).setText(R.string.loading_summary);
 		loadingContainer.findViewById(R.id.loading).setVisibility(View.VISIBLE);
 
 		setListAdapter(adapter);
@@ -220,7 +220,7 @@ public class BillInfo extends ListActivity implements LoadPhotoTask.LoadsPhoto, 
 		String house_result = bill.house_result;
 		long house_result_at = bill.house_result_at == null ? 0 : bill.house_result_at.getTime();
 		if (house_result != null && house_result_at > 0) {
-			if (house_result.equals("pass")) // TODO 161
+			if (house_result.equals("pass"))
 				addTimelinePiece(inner, R.string.passed_the_house_on, house_result_at);
 			else if (house_result.equals("fail"))
 				addTimelinePiece(inner, R.string.failed_the_house_on, house_result_at);

@@ -147,7 +147,7 @@ public class Utils {
 			.putExtra("id", roll.id);
 
 		Parcelable resource = Intent.ShortcutIconResource.fromContext(context, R.drawable.rolls);
-		String title = Utils.capitalize(roll.chamber) + " Roll No. " + roll.number;
+		String title = Utils.capitalize(roll.chamber) + " " + context.getString(R.string.roll_number) + " " + roll.number;
 
 		return new Intent()
 			.putExtra(Intent.EXTRA_SHORTCUT_INTENT, rollIntent)

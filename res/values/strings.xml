@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+    <string name="joint">Joint</string>
+    <string name="senate">Senate</string>
+    <string name="house">House</string>
     <string name="app_name">Congress</string>
     <string name="app_version">2.7</string>
     <string name="app_version_older">Version 2.6</string>
+
+    <string name="votes">Votes</string>
+    <string name="history">History</string>
+    <string name="news">News</string>
+    <string name="details">Details</string>
+
+    <string name="roll_number">Roll No.</string>
+    <string name="cosponsor">Cosponsor</string>
+    <string name="cosponsors">Cosponsors</string>
+    <string name="summary">Summary</string>
+    <string name="loading_summary">Loading summary...</string>
 
     <string name="loading_votes">Loading votes...</string>
     <string name="results">Results</string>
@@ -52,7 +65,7 @@
     <string name="committees_joint">Joint Committees</string>
     <string name="committees_empty">No committees found.</string>
     
-    <string name="representative_for">Representative for </string> <!--  TODO -->
+    <string name="representative_for">Representative for </string>
     <string name="legislator_search">Legislator Search</string>
     <string name="cosponsors_for">Cosponsors for</string>
     <string name="legislators_from">Legislators from</string>
