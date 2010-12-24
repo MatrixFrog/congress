@@ -82,7 +82,7 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 		footer.init(new Subscription(bill.id,  Subscriber.notificationName(bill), "ActionsBillSubscriber", bill.id, lastSeenId));
 	}
 	
-	public void loadBill() {
+	private void loadBill() {
 		if (bill.actions == null)
 			loadBillTask = (LoadBillTask) new LoadBillTask(this, bill.id).execute("actions");
 		else
@@ -99,7 +99,7 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 		Utils.showRefresh(this, R.string.error_connection);
 	}
 	
-	public void displayBill() {
+	private void displayBill() {
 		if (bill.actions.size() > 0) {
 			setupSubscription(bill.actions.get(0));
 			setListAdapter(new BillActionAdapter(this, bill.actions));
@@ -109,7 +109,7 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 		}
 	}
 	
-	protected class BillActionAdapter extends ArrayAdapter<Bill.Action> {
+	private static class BillActionAdapter extends ArrayAdapter<Bill.Action> {
     	LayoutInflater inflater;
     	Resources resources;
 
@@ -165,7 +165,7 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 
     }
 	
-	static class BillHistoryHolder {
+	private static class BillHistoryHolder {
 		LoadBillTask loadBillTask;
 		Bill bill;
 		
