@@ -2,6 +2,7 @@ package com.sunlightlabs.android.congress.utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
@@ -50,6 +51,15 @@ public class Utils {
 		Resources resources = context.getResources();
 		Sunlight.apiKey = resources.getString(R.string.sunlight_api_key);
 		Sunlight.appVersion = resources.getString(R.string.app_version);
+	}
+
+	/**
+	 * Are date1 and date2 on the same day?
+	 */
+	public static boolean sameDay(Date date1, Date date2) {
+		return (date1.getYear() == date2.getYear())
+		    && (date1.getMonth() == date2.getMonth())
+		    && (date1.getDate() == date2.getDate());
 	}
 
 	public static void alert(Context context, String msg) {

@@ -2,6 +2,8 @@ package com.sunlightlabs.android.congress;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -22,12 +24,15 @@ import com.sunlightlabs.android.congress.tasks.LoadBillTask;
 import com.sunlightlabs.android.congress.utils.Utils;
 import com.sunlightlabs.congress.models.Bill;
 import com.sunlightlabs.congress.models.CongressException;
+import com.sunlightlabs.congress.models.Bill.Action;
 
 public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill {
 	private LoadBillTask loadBillTask;
 	private Bill bill;
 
 	private Footer footer;
+
+	private Set<Integer> positionsToShowDate = new HashSet<Integer>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -86,23 +91,35 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 		if (bill.actions == null)
 			loadBillTask = (LoadBillTask) new LoadBillTask(this, bill.id).execute("actions");
 		else
-			displayBill();
+			displayBill(positionsToShowDate);
 	}
 	
 	public void onLoadBill(Bill bill) {
 		this.loadBillTask = null;
 		this.bill.actions = bill.actions;
-		displayBill();
+
+		positionsToShowDate.clear();
+		positionsToShowDate.add(0);
+
+		for (int i=1; i<bill.actions.size(); i++) {
+			Action previousAction = bill.actions.get(i-1);
+			Action action = bill.actions.get(i);
+
+			if (!Utils.sameDay(action.acted_at, previousAction.acted_at)) {
+				positionsToShowDate.add(i);
+			}
+		}
+		displayBill(positionsToShowDate);
 	}
 	
 	public void onLoadBill(CongressException exception) {
 		Utils.showRefresh(this, R.string.error_connection);
 	}
 	
-	private void displayBill() {
+	private void displayBill(Set<Integer> positionsToShowDate) {
 		if (bill.actions.size() > 0) {
 			setupSubscription(bill.actions.get(0));
-			setListAdapter(new BillActionAdapter(this, bill.actions));
+			setListAdapter(new BillActionAdapter(this, bill.actions, positionsToShowDate));
 		} else {
 			setupSubscription(null);
 			Utils.showEmpty(this, R.string.bill_actions_empty);
@@ -112,11 +129,13 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 	private static class BillActionAdapter extends ArrayAdapter<Bill.Action> {
     	LayoutInflater inflater;
     	Resources resources;
+    	Set<Integer> positionsToShowDate;
 
-        public BillActionAdapter(Activity context, ArrayList<Bill.Action> items) {
+        public BillActionAdapter(Activity context, ArrayList<Bill.Action> items, Set<Integer> positionsToShowDate) {
             super(context, 0, items);
             inflater = LayoutInflater.from(context);
             resources = context.getResources();
+            this.positionsToShowDate = positionsToShowDate;
         }
         
         @Override
@@ -141,8 +160,13 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 			
 			Bill.Action action = getItem(position);
 			
-			String timestamp = new SimpleDateFormat("MMM dd, yyyy").format(action.acted_at);
-			((TextView) view.findViewById(R.id.acted_at)).setText(timestamp);
+			if (positionsToShowDate.contains(position)) {
+				String timestamp = new SimpleDateFormat("MMM dd, yyyy").format(action.acted_at);
+				TextView actedAtView = (TextView) view.findViewById(R.id.acted_at);
+				actedAtView.setText(timestamp);
+				actedAtView.setVisibility(View.VISIBLE);
+			}
+
 			((TextView) view.findViewById(R.id.text)).setText(action.text);
 			
 			TextView typeView = (TextView) view.findViewById(R.id.type);
