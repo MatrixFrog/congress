@@ -11,6 +11,7 @@
 		
 		android:layout_weight="1"
 		android:layout_marginTop="3dp"
+		android:layout_marginBottom="7dp"
 		
 		android:textSize="16sp"
 		android:textColor="#dddddd"
@@ -25,6 +26,7 @@
 		android:layout_weight="0"
 		android:layout_alignTop="@id/acted_at"
 		android:layout_alignParentRight="true"
+		android:layout_marginBottom="7dp"
 		
 		android:textSize="16sp"
 		android:textStyle="bold"
@@ -39,7 +41,6 @@
 		
 		android:layout_below="@id/acted_at"
 		
-		android:layout_marginTop="7dp"
 		android:layout_marginLeft="5dp"
 		
 		android:textSize="16sp"
