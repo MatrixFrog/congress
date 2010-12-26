@@ -160,11 +160,14 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 			
 			Bill.Action action = getItem(position);
 			
+			TextView actedAtView = (TextView) view.findViewById(R.id.acted_at);
 			if (positionsToShowDate.contains(position)) {
 				String timestamp = new SimpleDateFormat("MMM dd, yyyy").format(action.acted_at);
-				TextView actedAtView = (TextView) view.findViewById(R.id.acted_at);
 				actedAtView.setText(timestamp);
 				actedAtView.setVisibility(View.VISIBLE);
+			}
+			else {
+				actedAtView.setVisibility(View.GONE);
 			}
 
 			((TextView) view.findViewById(R.id.text)).setText(action.text);

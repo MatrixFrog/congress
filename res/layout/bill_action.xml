@@ -12,7 +12,6 @@
 		android:layout_weight="1"
 		android:layout_marginTop="3dp"
 		
-		android:visibility="gone"
 		android:textSize="16sp"
 		android:textColor="#dddddd"
 		
