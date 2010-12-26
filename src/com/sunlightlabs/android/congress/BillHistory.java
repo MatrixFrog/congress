@@ -46,6 +46,7 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 		if (holder != null) {
 			this.loadBillTask = holder.loadBillTask;
 			this.bill = holder.bill;
+			this.positionsToShowDate = holder.positionsToShowDate;
 			if (loadBillTask != null)
 				loadBillTask.onScreenLoad(this);
 		}
@@ -56,7 +57,7 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 	
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		return new BillHistoryHolder(loadBillTask, bill);
+		return new BillHistoryHolder(loadBillTask, bill, positionsToShowDate);
 	}
 
 	public Context getContext() {
@@ -195,10 +196,12 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 	private static class BillHistoryHolder {
 		LoadBillTask loadBillTask;
 		Bill bill;
+		Set<Integer> positionsToShowDate;
 		
-		public BillHistoryHolder(LoadBillTask loadBillTask, Bill bill) {
+		public BillHistoryHolder(LoadBillTask loadBillTask, Bill bill, Set<Integer> positionsToShowDate) {
 			this.loadBillTask = loadBillTask;
 			this.bill = bill;
+			this.positionsToShowDate = positionsToShowDate;
 		}
 	}
 }
