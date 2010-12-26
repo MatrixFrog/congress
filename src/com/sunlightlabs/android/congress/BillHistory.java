@@ -23,6 +23,7 @@ import com.sunlightlabs.android.congress.notifications.Subscriber;
 import com.sunlightlabs.android.congress.notifications.Subscription;
 import com.sunlightlabs.android.congress.notifications.subscribers.ActionsBillSubscriber;
 import com.sunlightlabs.android.congress.tasks.LoadBillTask;
+import com.sunlightlabs.android.congress.test.BillHistoryTest;
 import com.sunlightlabs.android.congress.utils.Utils;
 import com.sunlightlabs.congress.models.Bill;
 import com.sunlightlabs.congress.models.CongressException;
@@ -98,6 +99,7 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 	}
 	
 	public void onLoadBill(Bill bill) {
+		bill = BillHistoryTest.getTestBill();
 		this.loadBillTask = null;
 		this.bill.actions = bill.actions;
 
