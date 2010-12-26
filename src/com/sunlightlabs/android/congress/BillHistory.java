@@ -10,10 +10,12 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunlightlabs.android.congress.notifications.Footer;
@@ -162,18 +164,24 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 			Bill.Action action = getItem(position);
 			
 			TextView actedAtView = (TextView) view.findViewById(R.id.acted_at);
+			TextView textView = (TextView) view.findViewById(R.id.text);
+			RelativeLayout.LayoutParams textLayoutParams = (RelativeLayout.LayoutParams) textView.getLayoutParams();
 			if (positionsToShowDate.contains(position)) {
 				String timestamp = new SimpleDateFormat("MMM dd, yyyy").format(action.acted_at);
 				actedAtView.setText(timestamp);
 				actedAtView.setVisibility(View.VISIBLE);
+				textLayoutParams.addRule(RelativeLayout.BELOW, R.id.acted_at);
 			}
 			else {
+				// Hide the date, and place the text under the type instead of under the date. 
 				actedAtView.setVisibility(View.GONE);
+				textLayoutParams.addRule(RelativeLayout.BELOW, R.id.type);
 			}
 
-			((TextView) view.findViewById(R.id.text)).setText(action.text);
+			textView.setText(Html.fromHtml("<b>&#183;</b> " + action.text));
 			
 			TextView typeView = (TextView) view.findViewById(R.id.type);
+			typeView.setVisibility(View.VISIBLE);
 			String type = action.type;
 			if (type.equals("vote") || type.equals("vote2") || type.equals("vote-aux")) {
 				typeView.setText("Vote");
@@ -185,7 +193,7 @@ public class BillHistory extends ListActivity implements LoadBillTask.LoadsBill 
 				typeView.setText("Vetoed");
 				typeView.setTextColor(resources.getColor(R.color.action_vetoed));
 			} else {
-				typeView.setText("");
+				typeView.setVisibility(View.GONE);
 			}
 			
 			return view;

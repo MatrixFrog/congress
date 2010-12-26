@@ -37,9 +37,10 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		
-		android:layout_below="@+id/acted_at"
+		android:layout_below="@id/acted_at"
 		
 		android:layout_marginTop="7dp"
+		android:layout_marginLeft="5dp"
 		
 		android:textSize="16sp"
 		android:textColor="@android:color/white"
